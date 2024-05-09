@@ -185,6 +185,3 @@ class Database:
             print(f"Ошибка при обновлении аудиокниги: {e}")
         finally:
             self.close()
-
-
-

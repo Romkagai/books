@@ -16,47 +16,50 @@ class AudiobookCataloguerLogic:
         self.current_is_completed = None
 
     def add_audiobook(self):
-        # Диалоговое окно с выбором добавления файла или папки
+        choice = self.prompt_audiobook_choice()
+        if choice == 0:  # File selected
+            self.add_file()
+        elif choice == 1:  # Directory selected
+            self.add_directory()
+
+    def prompt_audiobook_choice(self):
         msg_box = QMessageBox()
         msg_box.setWindowTitle("Добавление аудиокниги")
         msg_box.setText("Выберите, что хотите добавить:")
         msg_box.addButton("Файл", QMessageBox.ButtonRole.ActionRole)
         msg_box.addButton("Папку", QMessageBox.ButtonRole.ActionRole)
         msg_box.addButton("Отмена", QMessageBox.ButtonRole.RejectRole)
-        choice = msg_box.exec()
+        return msg_box.exec()
 
-        print(choice)
+    def add_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(self.ui, "Выберите аудиофайл", "", "Audio Files (*.mp3 *.aac *.wav)")
+        if file_path:
+            self.audiobook_manager.import_audiobook(file_path, directory=None)
+            book_id = self.audiobook_manager.get_book_id(file_path)
+            print(file_path, book_id)
+            self.audiobook_manager.import_file(file_path, book_id)
+            self.update_audiobook_table()
 
-        if choice == 0:  # Выбор файла
-            file_path, _ = QFileDialog.getOpenFileName(self.ui, "Выберите аудиофайл", "",
-                                                       "Audio Files (*.mp3 *.aac *.wav)")
-            if file_path:
-                self.audiobook_manager.import_audiobook(file_path, directory=None)
-                book_id = self.audiobook_manager.get_book_id(file_path)
-                self.audiobook_manager.import_file(file_path, book_id)
-                self.update_audiobook_table()
+    def add_directory(self):
+        directory = QFileDialog.getExistingDirectory(self.ui, "Выберите папку с аудиофайлами")
+        if directory:
+            files_to_add = self.get_audio_files(directory)
+            print(files_to_add)
+            if files_to_add:
+                self.audiobook_manager.import_audiobook(files_to_add[0], directory)
+                book_id = self.audiobook_manager.get_book_id(directory)
+                for file_path in files_to_add:
+                    self.audiobook_manager.import_file(file_path, book_id)
+                    self.update_audiobook_table()
 
-        elif choice == 1:  # Выбор папки
-            directory = QFileDialog.getExistingDirectory(self.ui, "Выберите папку с аудиофайлами")
-            if directory:
-                # Получаем список всех подходящих аудиофайлов в папке
-                files_to_add = [os.path.join(directory, f) for f in os.listdir(directory)
-                                if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(
-                        os.path.join(directory, f))]
-
-                if files_to_add:
-                    print("Найдены файлы:", files_to_add)
-                    self.audiobook_manager.import_audiobook(files_to_add[0], directory)
-                    book_id = self.audiobook_manager.get_book_id(directory)
-                    for file_path in files_to_add:
-                        self.audiobook_manager.import_file(file_path, book_id)
-                        self.update_audiobook_table()
+    def get_audio_files(self, directory):
+        return [os.path.join(directory, f) for f in os.listdir(directory)
+                if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(
+                os.path.join(directory, f))]
 
     def update_audiobook_table(self):
         records = self.audiobook_manager.get_audiobooks_list()
-        self.ui.audiobookTable.setRowCount(len(records))  # Обновление количества строк
-
-        print(records)
+        self.ui.audiobookTable.setRowCount(len(records))
 
         for index, (book_id, author, title) in enumerate(records):
             self.ui.audiobookTable.setItem(index, 0, QTableWidgetItem(str(book_id)))
@@ -234,11 +237,11 @@ class AudiobookCataloguerLogic:
         if row == -1:
             QMessageBox.warning(self.ui, "Предупреждение", "Выберите книгу для редактирования")
             return
-        book_id = self.ui.audiobookTable.item(row, 0).text()
-        book_info = self.audiobook_manager.get_book_info_by_id(book_id)
+
+        book_info = self.audiobook_manager.get_book_info_by_id(self.current_book_id)
 
         dialog = EditBookDialog(self.ui, book_info)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            self.audiobook_manager.update_book_info(book_id, dialog.book_info)
+            self.audiobook_manager.update_book_info(self.current_book_id, dialog.book_info)
             self.update_audiobook_table()
             self.update_current_book_info()

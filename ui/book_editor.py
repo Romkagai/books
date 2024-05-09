@@ -10,6 +10,7 @@ class EditBookDialog(QDialog):
 
     def init_ui(self):
         self.setLayout(QVBoxLayout())
+        self.setWindowTitle("Редактирование книги")
         self.create_input_fields()
         self.create_action_buttons()
 

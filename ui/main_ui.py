@@ -84,7 +84,17 @@ class AudiobookCataloguer(QWidget):
         self.audiobookTable.setColumnCount(3)
         self.audiobookTable.setHorizontalHeaderLabels(["ID", "Автор", "Название"])
         self.audiobookTable.verticalHeader().setVisible(False)
-        self.audiobookTable.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+        # Установка режима изменения размера для шапки
+        header = self.audiobookTable.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # Фиксированная ширина для первого столбца
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Растягивающиеся столбцы для остальных
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+
+        # Установка конкретной ширины для первого столбца
+        header.resizeSection(0,
+                             50)  # Вы можете изменить число 50 на другое значение, которое подходит под ваш интерфейс
+
         layout.addWidget(self.audiobookTable)
 
     def setupImageView(self, layout):
