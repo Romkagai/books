@@ -1,10 +1,8 @@
-import os
-import sys
-from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                             QLabel, QLineEdit, QComboBox, QTableWidget, QTableWidgetItem,
-                             QGridLayout, QGraphicsView, QGraphicsScene, QLabel, QHeaderView, QFileDialog, QMessageBox)
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
+                             QLineEdit, QComboBox, QTableWidget, QGridLayout, QGraphicsView, QGraphicsScene, QLabel,
+                             QHeaderView)
 
-from controllers.audiobook_controller import AudiobookCataloguerLogic
+from controllers.audiobook_handler import AudiobookCataloguerLogic
 
 
 class AudiobookCataloguer(QWidget):
@@ -73,6 +71,10 @@ class AudiobookCataloguer(QWidget):
         infoLayout = QGridLayout()
         labels = ["Название", "Автор", "Жанр", "Год", "Чтец", "Дата добавления", "Описание"]
         self.infoLabels = [QLabel(label) for label in labels]
+        max_label_width = 200  # Максимальная ширина метки в пикселях
+        for label in self.infoLabels:
+            label.setWordWrap(True)
+            label.setMaximumWidth(max_label_width)
         for i, label in enumerate(self.infoLabels):
             infoLayout.addWidget(label, i, 0)
 

@@ -90,15 +90,21 @@ class AudiobookCataloguerLogic:
 
     def update_current_book_info(self):
         book_info = self.audiobook_manager.get_book_info_by_id(self.current_book_id)
-        self.ui.infoLabels[0].setText(f"Название: {book_info[1]}")  # Обновление лейблов
-        self.ui.infoLabels[1].setText(f"Автор: {book_info[2]}")
-        self.ui.infoLabels[2].setText(f"Жанр: {book_info[3]}")
-        self.ui.infoLabels[3].setText(f"Год: {book_info[4]}")
-        self.ui.infoLabels[4].setText(f"Чтец: {book_info[5]}")
-        self.ui.infoLabels[5].setText(f"Дата добавления: {book_info[6]}")
-        self.ui.infoLabels[6].setText(f"Описание: {book_info[7]}")
+        if book_info is None:
+            print("Ошибка: информация о книге не найдена")
+            return
 
-        if os.path.isdir(book_info[13]):
+        # Обновление информационных лейблов
+        self.ui.infoLabels[0].setText(f"Название: {book_info['title']}")
+        self.ui.infoLabels[1].setText(f"Автор: {book_info['author']}")
+        self.ui.infoLabels[2].setText(f"Жанр: {book_info['genre']}")
+        self.ui.infoLabels[3].setText(f"Год: {book_info['year']}")
+        self.ui.infoLabels[4].setText(f"Чтец: {book_info['narrator']}")
+        self.ui.infoLabels[5].setText(f"Дата добавления: {book_info['date_added']}")
+        self.ui.infoLabels[6].setText(f"Описание: {book_info['description']}")
+
+        # Проверка наличия и отображение таблицы файлов, если путь является директорией
+        if 'path' in book_info and os.path.isdir(book_info['path']):
             self.ui.fileTable.setVisible(True)
             self.update_file_table(self.current_book_id)
         else:
@@ -235,3 +241,4 @@ class AudiobookCataloguerLogic:
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.audiobook_manager.update_book_info(book_id, dialog.book_info)
             self.update_audiobook_table()
+            self.update_current_book_info()

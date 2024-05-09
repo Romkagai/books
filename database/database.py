@@ -168,7 +168,7 @@ class Database:
         self.connection.commit()
         self.close()
 
-    def update_audiobook_in_db(self, book_id, metadata):
+    def update_book_info(self, book_id, metadata):
         self.connect()
         try:
             # Создаем строку с перечислением полей и их новых значений
@@ -184,6 +184,7 @@ class Database:
         except Exception as e:
             print(f"Ошибка при обновлении аудиокниги: {e}")
         finally:
-            self.disconnect()
+            self.close()
+
 
 

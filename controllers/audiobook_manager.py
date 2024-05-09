@@ -1,7 +1,7 @@
 from database.database import Database
 import os
 from controllers.data_extractor import extract_metadata, extract_cover_from_file
-
+from config import DATABASE_AUDIOBOOKS_COLUMNS
 
 class AudiobookManager:
     def __init__(self):
@@ -39,7 +39,10 @@ class AudiobookManager:
         return self.db.get_audiobooks_list()
 
     def get_book_info_by_id(self, book_id):
-        return self.db.get_book_info_by_id(book_id)
+        book_info = self.db.get_book_info_by_id(book_id)
+        if book_info:
+            return dict(zip(DATABASE_AUDIOBOOKS_COLUMNS, book_info))
+        return None
 
     def get_audiobook_files(self, book_id):
         return self.db.get_audiobook_files(book_id)
@@ -68,4 +71,7 @@ class AudiobookManager:
 
     def mark_as_incompleted(self, book_id):
         self.db.mark_as_incompleted(book_id)
+
+    def update_book_info(self, book_id, book_info):
+        self.db.update_book_info(book_id, book_info)
 
