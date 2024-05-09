@@ -1,7 +1,7 @@
 import sys
 
 from PyQt6.QtWidgets import QApplication
-from ui.ui import AudiobookCataloguer
+from ui.main_ui import AudiobookCataloguer
 
 
 app = QApplication(sys.argv)
