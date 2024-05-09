@@ -7,7 +7,7 @@ from controllers.data_extractor import extract_metadata, extract_cover_from_file
 
 
 class AudiobookManager:
-    def __init__(self, view):
+    def __init__(self):
         self.db = Database("database.db")
 
     def import_audiobook(self, file_path, directory):
@@ -23,7 +23,7 @@ class AudiobookManager:
         elif directory:
             print("Выбрана папка (менеджер)")
             metadata = extract_metadata(file_path)
-            metadata["Title"] = os.path.basename(file_path)
+            metadata["Title"] = os.path.basename(directory)
             metadata["Path"] = directory
             print(metadata)
 
@@ -48,3 +48,16 @@ class AudiobookManager:
     def find_audiobook_cover(self, book_id):
         file_path = self.db.get_audiobook_files(book_id)[0][0]
         return extract_cover_from_file(file_path)
+
+    def delete_audiobook(self, book_id):
+        self.db.delete_audiobook(book_id)
+
+    def add_audiobook_to_favorite(self, book_id):
+        self.db.add_audiobook_to_favorite(book_id)
+
+    def is_favorite(self, book_id):
+        return self.db.is_favorite(book_id)
+
+    def remove_audiobook_from_favorite(self, book_id):
+        self.db.remove_audiobook_from_favorite(book_id)
+

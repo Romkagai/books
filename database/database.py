@@ -28,7 +28,7 @@ class Database:
                                    'is_listened BOOL DEFAULT FALSE',
                                    'file_path TEXT NOT NULL UNIQUE',
                                    'book_id INTEGER NOT NULL',
-                                   'FOREIGN KEY (book_id) REFERENCES audiobooks(book_id)'])
+                                   'FOREIGN KEY (book_id) REFERENCES audiobooks(book_id) ON DELETE CASCADE'])
 
     def add_audiobook_to_db(self, metadata):
         self.connect()
@@ -47,7 +47,8 @@ class Database:
             self.cursor.execute("INSERT INTO audiobooks (title, author, genre, year, narrator, description, bitrate, "
                                 "duration, size, path) VALUES ("
                                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                (title, author, genre, year, narrator, description, bitrate, duration, size, file_path,))
+                                (
+                                title, author, genre, year, narrator, description, bitrate, duration, size, file_path,))
             self.connection.commit()
 
             print("Книга добавлена в базу(database)", file_path)
@@ -77,30 +78,6 @@ class Database:
         self.close()
         return book_info
 
-    def connect(self):
-        try:
-            self.connection = sqlite3.connect(self.db_name)
-            self.cursor = self.connection.cursor()
-        except sqlite3.Error as e:
-            print("Error connecting to database:", e)
-
-    def close(self):
-        if self.connection:
-            self.connection.close()
-            print("Connection closed.")
-
-    def create_table(self, table_name, columns):
-        self.connect()
-        try:
-            column_str = ', '.join(columns)
-            create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_str})"
-            self.cursor.execute(create_table_query)
-            self.connection.commit()
-            print("Table created successfully:", table_name)
-        except sqlite3.Error as e:
-            print("Error creating table:", e)
-        self.close()
-
     def get_book_id_from_db(self, file_path):
         self.connect()
         self.cursor.execute("SELECT book_id FROM audiobooks WHERE path = (?)", (file_path,))
@@ -121,3 +98,54 @@ class Database:
         files = self.cursor.fetchall()
         self.close()
         return files
+
+    def connect(self):
+        try:
+            self.connection = sqlite3.connect(self.db_name)
+            self.cursor = self.connection.cursor()
+            self.cursor.execute("PRAGMA foreign_keys = ON")
+        except sqlite3.Error as e:
+            print("Error connecting to database:", e)
+
+    def close(self):
+        if self.connection:
+            self.connection.close()
+            print("Connection closed.")
+
+    def create_table(self, table_name, columns):
+        self.connect()
+        try:
+            column_str = ', '.join(columns)
+            create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_str})"
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table created successfully:", table_name)
+        except sqlite3.Error as e:
+            print("Error creating table:", e)
+        self.close()
+
+    def delete_audiobook(self, book_id):
+        self.connect()
+        self.cursor.execute("DELETE FROM audiobooks WHERE book_id = (?)", (book_id,))
+        self.connection.commit()
+        self.close()
+
+    def add_audiobook_to_favorite(self, book_id):
+        self.connect()
+        self.cursor.execute("UPDATE audiobooks SET is_favorite = 1 WHERE book_id = (?)", (book_id,))
+        self.connection.commit()
+        self.close()
+
+    def is_favorite(self, book_id):
+        self.connect()
+        self.cursor.execute("SELECT is_favorite FROM audiobooks WHERE book_id = (?)", (book_id,))
+        is_favorite = self.cursor.fetchone()[0]
+        self.close()
+        return is_favorite
+
+    def remove_audiobook_from_favorite(self, book_id):
+        self.connect()
+        self.cursor.execute("UPDATE audiobooks SET is_favorite = 0 WHERE book_id = (?)", (book_id,))
+        self.connection.commit()
+        self.close()
+
