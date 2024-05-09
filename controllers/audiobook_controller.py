@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QDialog
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 import os
 from controllers.audiobook_manager import AudiobookManager
+from ui.book_editor import EditBookDialog
 
 
 class AudiobookCataloguerLogic:
@@ -84,6 +85,8 @@ class AudiobookCataloguerLogic:
 
         else:
             self.clear_info_labels()
+            for button in self.ui.actionButtons:
+                button.setEnabled(False)
 
     def update_current_book_info(self):
         book_info = self.audiobook_manager.get_book_info_by_id(self.current_book_id)
@@ -93,6 +96,7 @@ class AudiobookCataloguerLogic:
         self.ui.infoLabels[3].setText(f"Год: {book_info[4]}")
         self.ui.infoLabels[4].setText(f"Чтец: {book_info[5]}")
         self.ui.infoLabels[5].setText(f"Дата добавления: {book_info[6]}")
+        self.ui.infoLabels[6].setText(f"Описание: {book_info[7]}")
 
         if os.path.isdir(book_info[13]):
             self.ui.fileTable.setVisible(True)
@@ -101,10 +105,8 @@ class AudiobookCataloguerLogic:
             self.ui.fileTable.setVisible(False)
 
         # Активация кнопок
-        self.ui.findBookInfoButton.setEnabled(True)
-        self.ui.addFavoriteButton.setEnabled(True)
-        self.ui.addCompletedButton.setEnabled(True)
-        self.ui.deleteButton.setEnabled(True)
+        for button in self.ui.actionButtons:
+            button.setEnabled(True)
 
         self.update_cover(self.current_book_id)
 
@@ -116,15 +118,14 @@ class AudiobookCataloguerLogic:
         self.ui.infoLabels[3].setText(f"Год:")
         self.ui.infoLabels[4].setText(f"Чтец:")
         self.ui.infoLabels[5].setText(f"Дата добавления:")
+        self.ui.infoLabels[6].setText(f"Описание:")
         self.ui.fileTable.setVisible(False)
         self.ui.imageScene.clear()
         self.ui.imageScene.addText("Обложка не найдена")
 
         # Деактивация кнопок
-        self.ui.findBookInfoButton.setEnabled(False)
-        self.ui.addFavoriteButton.setEnabled(False)
-        self.ui.addCompletedButton.setEnabled(False)
-        self.ui.deleteButton.setEnabled(False)
+        for button in self.ui.actionButtons:
+            button.setEnabled(False)
 
     def update_completed_button(self):
         # Обновление состояния выполненного
@@ -221,3 +222,16 @@ class AudiobookCataloguerLogic:
 
     def do_nothing(self):
         pass
+
+    def edit_book(self):
+        row = self.ui.audiobookTable.currentRow()
+        if row == -1:
+            QMessageBox.warning(self.ui, "Предупреждение", "Выберите книгу для редактирования")
+            return
+        book_id = self.ui.audiobookTable.item(row, 0).text()
+        book_info = self.audiobook_manager.get_book_info_by_id(book_id)
+
+        dialog = EditBookDialog(self.ui, book_info)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.audiobook_manager.update_book_info(book_id, dialog.book_info)
+            self.update_audiobook_table()

@@ -33,16 +33,16 @@ class Database:
     def add_audiobook_to_db(self, metadata):
         self.connect()
         try:
-            title = metadata["Title"]
-            author = metadata["Author"]
-            genre = metadata["Genre"]
-            year = metadata["Year"]
-            narrator = metadata["Narrator"]
-            description = metadata["Description"]
-            bitrate = metadata["Bitrate"]
-            duration = metadata["Duration"]
-            size = metadata["Size"]
-            file_path = metadata["Path"]
+            title = metadata["title"]
+            author = metadata["author"]
+            genre = metadata["genre"]
+            year = metadata["year"]
+            narrator = metadata["narrator"]
+            description = metadata["description"]
+            bitrate = metadata["bitrate"]
+            duration = metadata["duration"]
+            size = metadata["size"]
+            file_path = metadata["path"]
 
             self.cursor.execute("INSERT INTO audiobooks (title, author, genre, year, narrator, description, bitrate, "
                                 "duration, size, path) VALUES ("
@@ -167,4 +167,23 @@ class Database:
         self.cursor.execute("UPDATE audiobooks SET is_completed = 0 WHERE book_id = (?)", (book_id,))
         self.connection.commit()
         self.close()
+
+    def update_audiobook_in_db(self, book_id, metadata):
+        self.connect()
+        try:
+            # Создаем строку с перечислением полей и их новых значений
+            update_parts = ', '.join([f"{key} = ?" for key in metadata.keys()])
+            values = list(metadata.values()) + [book_id]
+
+            query = f"UPDATE audiobooks SET {update_parts} WHERE book_id = ?"
+            self.cursor.execute(query, values)
+            self.connection.commit()
+
+            print(f"Информация по книге с ID {book_id} обновлена в базе.")
+
+        except Exception as e:
+            print(f"Ошибка при обновлении аудиокниги: {e}")
+        finally:
+            self.disconnect()
+
 

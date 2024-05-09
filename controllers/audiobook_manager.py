@@ -1,8 +1,5 @@
 from database.database import Database
 import os
-from mutagen.mp3 import MP3
-from mutagen.id3 import ID3
-
 from controllers.data_extractor import extract_metadata, extract_cover_from_file
 
 
@@ -14,7 +11,9 @@ class AudiobookManager:
         # Проверка, является ли file_path файлом с расширением .mp3
         if directory is None and file_path.endswith(".mp3"):
             print("Выбран аудиофайл (менеджер)")
+
             metadata = extract_metadata(file_path)
+            print(type(metadata))
             print(metadata)
 
             self.db.add_audiobook_to_db(metadata)
@@ -23,8 +22,8 @@ class AudiobookManager:
         elif directory:
             print("Выбрана папка (менеджер)")
             metadata = extract_metadata(file_path)
-            metadata["Title"] = os.path.basename(directory)
-            metadata["Path"] = directory
+            metadata["title"] = os.path.basename(directory)
+            metadata["path"] = directory
             print(metadata)
 
             self.db.add_audiobook_to_db(metadata)
