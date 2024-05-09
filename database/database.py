@@ -149,3 +149,22 @@ class Database:
         self.connection.commit()
         self.close()
 
+    def is_completed(self, book_id):
+        self.connect()
+        self.cursor.execute("SELECT is_completed FROM audiobooks WHERE book_id = (?)", (book_id,))
+        is_completed = self.cursor.fetchone()[0]
+        self.close()
+        return is_completed
+
+    def mark_as_completed(self, book_id):
+        self.connect()
+        self.cursor.execute("UPDATE audiobooks SET is_completed = 1 WHERE book_id = (?)", (book_id,))
+        self.connection.commit()
+        self.close()
+
+    def mark_as_incompleted(self, book_id):
+        self.connect()
+        self.cursor.execute("UPDATE audiobooks SET is_completed = 0 WHERE book_id = (?)", (book_id,))
+        self.connection.commit()
+        self.close()
+

@@ -61,3 +61,12 @@ class AudiobookManager:
     def remove_audiobook_from_favorite(self, book_id):
         self.db.remove_audiobook_from_favorite(book_id)
 
+    def is_completed(self, book_id):
+        return self.db.is_completed(book_id)
+
+    def mark_as_completed(self, book_id):
+        self.db.mark_as_completed(book_id)
+
+    def mark_as_incompleted(self, book_id):
+        self.db.mark_as_incompleted(book_id)
+

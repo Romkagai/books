@@ -12,6 +12,7 @@ class AudiobookCataloguerLogic:
         # Текущая книга
         self.current_book_id = None
         self.current_is_favorite = None
+        self.current_is_completed = None
 
     def add_audiobook(self):
         # Диалоговое окно с выбором добавления файла или папки
@@ -65,6 +66,9 @@ class AudiobookCataloguerLogic:
         if row >= 0:
             book_id = self.ui.audiobookTable.item(row, 0).text()
             is_fav = self.audiobook_manager.is_favorite(book_id)
+            is_completed = self.audiobook_manager.is_completed(book_id)
+
+            print(book_id, is_fav, is_completed)
 
             if self.current_book_id != book_id:
                 self.current_book_id = book_id
@@ -73,6 +77,10 @@ class AudiobookCataloguerLogic:
             if self.current_is_favorite != is_fav:
                 self.current_is_favorite = is_fav
                 self.update_favourite_button()
+
+            if self.current_is_completed != is_completed:
+                self.current_is_completed = is_completed
+                self.update_completed_button()
 
         else:
             self.clear_info_labels()
@@ -92,9 +100,16 @@ class AudiobookCataloguerLogic:
         else:
             self.ui.fileTable.setVisible(False)
 
+        # Активация кнопок
+        self.ui.findBookInfoButton.setEnabled(True)
+        self.ui.addFavoriteButton.setEnabled(True)
+        self.ui.addCompletedButton.setEnabled(True)
+        self.ui.deleteButton.setEnabled(True)
+
         self.update_cover(self.current_book_id)
 
     def clear_info_labels(self):
+        # Очистка лейблов
         self.ui.infoLabels[0].setText(f"Название:")
         self.ui.infoLabels[1].setText(f"Автор:")
         self.ui.infoLabels[2].setText(f"Жанр:")
@@ -104,6 +119,42 @@ class AudiobookCataloguerLogic:
         self.ui.fileTable.setVisible(False)
         self.ui.imageScene.clear()
         self.ui.imageScene.addText("Обложка не найдена")
+
+        # Деактивация кнопок
+        self.ui.findBookInfoButton.setEnabled(False)
+        self.ui.addFavoriteButton.setEnabled(False)
+        self.ui.addCompletedButton.setEnabled(False)
+        self.ui.deleteButton.setEnabled(False)
+
+    def update_completed_button(self):
+        # Обновление состояния выполненного
+        if self.current_is_completed:
+            self.ui.addCompletedButton.setText("Пометить как незавершенное")
+            self.ui.addCompletedButton.setStyleSheet("background-color: red;")
+            self.ui.addCompletedButton.clicked.disconnect()
+            self.ui.addCompletedButton.clicked.connect(self.mark_as_incomplete)
+
+        else:
+            self.ui.addCompletedButton.setText("Пометить как завершенное")
+            self.ui.addCompletedButton.setStyleSheet("background-color: green;")
+            self.ui.addCompletedButton.clicked.disconnect()
+            self.ui.addCompletedButton.clicked.connect(self.mark_as_complete)
+
+    def mark_as_complete(self):
+        # Изменение состояния выполненного в базе данных
+        self.audiobook_manager.mark_as_completed(self.current_book_id)
+        # Обновление текущего состояния выполненного
+        self.current_is_completed = True
+        # Обновление состояния выполненного
+        self.update_completed_button()
+
+    def mark_as_incomplete(self):
+        # Изменение состояния выполненного в базе данных
+        self.audiobook_manager.mark_as_incompleted(self.current_book_id)
+        # Обновление текущего состояния выполненного
+        self.current_is_completed = False
+        # Обновление состояния выполненного
+        self.update_completed_button()
 
     def update_favourite_button(self):
         # Обновление состояния избранного

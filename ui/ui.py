@@ -18,8 +18,12 @@ class AudiobookCataloguer(QWidget):
         self.imageScene = QGraphicsScene()
         self.imageView = QGraphicsView(self.imageScene)
         self.fileTable = QTableWidget()
+        self.findBookInfoButton = None
         self.infoLabels = None
         self.addFavoriteButton = None
+        self.addCompletedButton = None
+        self.deleteButton = None
+        self.actionButtons = None
         self.initUI()
 
 
@@ -72,14 +76,14 @@ class AudiobookCataloguer(QWidget):
         for i, label in enumerate(self.infoLabels):
             infoLayout.addWidget(label, i, 0)
 
-        actionButtons = [QPushButton("Найти информацию в интернете"),
+        self.actionButtons = [QPushButton("Найти информацию в интернете"),
                          QPushButton("Удалить"),
                          QPushButton("Добавить в избранное"),
                          QPushButton("Пометить как завершенное")]
 
         rightLayout.addWidget(self.imageView)
         rightLayout.addLayout(infoLayout)
-        for button in actionButtons:
+        for button in self.actionButtons:
             rightLayout.addWidget(button)
 
         # Добавление левой и правой части в главный layout
@@ -96,17 +100,25 @@ class AudiobookCataloguer(QWidget):
         # Вывод информации об аудиокниге при нажатии на ячейку таблицы
         self.audiobookTable.cellClicked.connect(self.model.display_audiobook_info)
 
+        # Кнопка "Найти информацию в интернете"
+        self.findBookInfoButton = self.actionButtons[0]
+        self.findBookInfoButton.clicked.connect(self.model.do_nothing)
+        self.findBookInfoButton.setEnabled(False)
+
         # Кнопка "Удалить аудиокнигу"
-        deleteButton = actionButtons[1]
-        deleteButton.clicked.connect(self.model.delete_audiobook)
+        self.deleteButton = self.actionButtons[1]
+        self.deleteButton.clicked.connect(self.model.delete_audiobook)
+        self.deleteButton.setEnabled(False)
 
         # Кнопка "Добавить в избранное"
-        self.addFavoriteButton = actionButtons[2]
+        self.addFavoriteButton = self.actionButtons[2]
         self.addFavoriteButton.clicked.connect(self.model.do_nothing)
+        self.addFavoriteButton.setEnabled(False)
 
         # Кнопка "Пометить как завершенное"
-        # finishButton = actionButtons[3]
-        # finishButton.clicked.connect(self.model.mark_audiobook_as_finished)
+        self.addCompletedButton = self.actionButtons[3]
+        self.addCompletedButton.clicked.connect(self.model.do_nothing)
+        self.addCompletedButton.setEnabled(False)
 
         # Обновление таблицы при запуске
         self.model.update_audiobook_table()
