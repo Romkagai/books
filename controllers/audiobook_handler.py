@@ -56,12 +56,12 @@ class AudiobookCataloguerLogic:
                     self.audiobook_manager.import_file(file_path, book_id)
                     self.update_audiobook_table(self.current_sort_option)
 
-    def update_audiobook_table(self, sort_by=None, ascending=None):
+    def update_audiobook_table(self, sort_by=None, ascending=None, search_text=""):
         if sort_by is None:
             sort_by = self.current_sort_option
         if ascending is None:
             ascending = self.sortAscending
-        records = self.audiobook_manager.get_audiobooks_list(sort_by, ascending)
+        records = self.audiobook_manager.get_audiobooks_list(sort_by, ascending, search_text)
         self.ui.audiobookTable.setRowCount(len(records))
 
         for index, (book_id, author, title) in enumerate(records):
@@ -233,8 +233,6 @@ class AudiobookCataloguerLogic:
         row = self.ui.audiobookTable.currentRow()
         self.ui.audiobookTable.removeRow(row)
 
-        print("ПРОИСХОДИТ УДАЛЕНИЕ", row, self.current_book_id)
-
         # Проверяем состояние таблицы после удаления.
         if row < self.ui.audiobookTable.rowCount():
             # Если удалили не последнюю строку, показываем информацию о новой строке на этом месте.
@@ -280,3 +278,7 @@ class AudiobookCataloguerLogic:
         else:
             self.ui.sortDirectionButton.setText("⬇️")
         self.sort_changed()
+
+    def do_search(self):
+        search_text = self.ui.searchPanel.text()
+        self.update_audiobook_table(self.current_sort_option, self.sortAscending, search_text)

@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="v4">
+    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="v5">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/audiobook_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/audiobook_handler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/audiobook_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/audiobook_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/data_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/data_extractor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/book_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/book_editor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/main_ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_ui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -146,13 +143,22 @@
       <option name="project" value="LOCAL" />
       <updated>1715277487470</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="v5">
+      <option name="closed" value="true" />
+      <created>1715319469694</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1715319469694</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="v2" />
     <MESSAGE value="v3" />
     <MESSAGE value="v4" />
-    <option name="LAST_COMMIT_MESSAGE" value="v4" />
+    <MESSAGE value="v5" />
+    <option name="LAST_COMMIT_MESSAGE" value="v5" />
   </component>
 </project>

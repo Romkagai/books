@@ -64,10 +64,12 @@ class Database:
         self.connection.commit()
         self.close()
 
-    def get_audiobooks_list(self, sort_by, ascending):
+    def get_audiobooks_list(self, sort_by, ascending, search_text):
         self.connect()
         direction = "ASC" if ascending else "DESC"
-        self.cursor.execute(f"SELECT book_id, author, title FROM audiobooks ORDER BY {sort_by} {direction}")
+        self.cursor.execute(f"SELECT book_id, author, title FROM audiobooks "
+                            f"WHERE title LIKE '%{search_text}%' OR author LIKE '%{search_text}%' "
+                            f"ORDER BY {sort_by} {direction}")
         records = self.cursor.fetchall()
         self.close()
         return records

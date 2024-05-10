@@ -1,3 +1,4 @@
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                              QLineEdit, QComboBox, QTableWidget, QLabel,
                              QHeaderView, QGraphicsView, QGraphicsScene)
@@ -53,10 +54,19 @@ class AudiobookCataloguer(QWidget):
         self.model.update_audiobook_table()
         self.sortOptions.currentIndexChanged.connect(self.model.sort_changed)
         self.sortDirectionButton.clicked.connect(self.model.toggle_sort_direction)
+        self.searchPanel.textChanged.connect(self.searchTimer.start)
 
     def setupSearchPanel(self, layout):
-        searchPanel = QLineEdit()
-        layout.addWidget(searchPanel)
+        self.searchPanel = QLineEdit()
+        self.searchPanel.setPlaceholderText("Введите текст для поиска...")
+
+        # Динамический поиск
+        self.searchTimer = QTimer()
+        self.searchTimer.setInterval(300)
+        self.searchTimer.setSingleShot(True)
+        self.searchTimer.timeout.connect(self.model.do_search)
+
+        layout.addWidget(self.searchPanel)
 
     def setupFileTable(self, layout):
         self.fileTable = QTableWidget()
@@ -95,8 +105,10 @@ class AudiobookCataloguer(QWidget):
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
 
         # Установка конкретной ширины для первого столбца
-        header.resizeSection(0,
-                             50)  # Вы можете изменить число 50 на другое значение, которое подходит под ваш интерфейс
+        header.resizeSection(0, 50)
+
+        # Отключение возможности редактирования ячеек
+        self.audiobookTable.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         layout.addWidget(self.audiobookTable)
 

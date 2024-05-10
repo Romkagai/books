@@ -35,8 +35,8 @@ class AudiobookManager:
     def get_book_id(self, file_path):
         return self.db.get_book_id_from_db(file_path)
 
-    def get_audiobooks_list(self, sort_by, ascending):
-        return self.db.get_audiobooks_list(sort_by, ascending)
+    def get_audiobooks_list(self, sort_by, ascending, search_text):
+        return self.db.get_audiobooks_list(sort_by, ascending, search_text)
 
     def get_book_info_by_id(self, book_id):
         book_info = self.db.get_book_info_by_id(book_id)
