@@ -2,8 +2,8 @@ from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QDialog
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 import os
-from controllers.audiobook_manager import AudiobookManager
-from ui.book_editor import EditBookDialog
+from models.audiobook_manager import AudiobookManager
+from view.book_editor import EditBookDialog
 from config import DATABASE_FIELD_MAP as field_map, SORT_OPTIONS
 
 
@@ -62,16 +62,16 @@ class AudiobookCataloguerLogic:
         if ascending is None:
             ascending = self.sortAscending
         records = self.audiobook_manager.get_audiobooks_list(sort_by, ascending, search_text)
-        self.ui.audiobookTable.setRowCount(len(records))
+        self.ui.CatalogPanel.audiobookTable.setRowCount(len(records))
 
         for index, (book_id, author, title) in enumerate(records):
-            self.ui.audiobookTable.setItem(index, 0, QTableWidgetItem(str(book_id)))
-            self.ui.audiobookTable.setItem(index, 1, QTableWidgetItem(author))
-            self.ui.audiobookTable.setItem(index, 2, QTableWidgetItem(title))
+            self.ui.CatalogPanel.audiobookTable.setItem(index, 0, QTableWidgetItem(str(book_id)))
+            self.ui.CatalogPanel.audiobookTable.setItem(index, 1, QTableWidgetItem(author))
+            self.ui.CatalogPanel.audiobookTable.setItem(index, 2, QTableWidgetItem(title))
 
     def display_audiobook_info(self, row):
         if row >= 0:
-            book_id = self.ui.audiobookTable.item(row, 0).text()
+            book_id = self.ui.CatalogPanel.audiobookTable.item(row, 0).text()
             is_fav = self.audiobook_manager.is_favorite(book_id)
             is_completed = self.audiobook_manager.is_completed(book_id)
 
@@ -94,7 +94,7 @@ class AudiobookCataloguerLogic:
         else:
             # Очищаем информацию и деактивируем кнопки.
             self.clear_info_labels()
-            for button in self.ui.actionButtons:
+            for button in self.ui.BookInfoTab.actionButtons:
                 button.setEnabled(False)
 
     def update_current_book_info(self):
@@ -104,57 +104,57 @@ class AudiobookCataloguerLogic:
             return
 
         # Обновление информационных лейблов
-        self.ui.infoLabels[0].setText(f"Название: {book_info['title']}")
-        self.ui.infoLabels[1].setText(f"Автор: {book_info['author']}")
-        self.ui.infoLabels[2].setText(f"Жанр: {book_info['genre']}")
-        self.ui.infoLabels[3].setText(f"Год: {book_info['year']}")
-        self.ui.infoLabels[4].setText(f"Чтец: {book_info['narrator']}")
-        self.ui.infoLabels[5].setText(f"Дата добавления: {book_info['date_added']}")
-        self.ui.infoLabels[6].setText(f"Описание: {book_info['description']}")
+        self.ui.BookInfoTab.infoLabels[0].setText(f"Название: {book_info['title']}")
+        self.ui.BookInfoTab.infoLabels[1].setText(f"Автор: {book_info['author']}")
+        self.ui.BookInfoTab.infoLabels[2].setText(f"Жанр: {book_info['genre']}")
+        self.ui.BookInfoTab.infoLabels[3].setText(f"Год: {book_info['year']}")
+        self.ui.BookInfoTab.infoLabels[4].setText(f"Чтец: {book_info['narrator']}")
+        self.ui.BookInfoTab.infoLabels[5].setText(f"Дата добавления: {book_info['date_added']}")
+        self.ui.BookInfoTab.infoLabels[6].setText(f"Описание: {book_info['description']}")
 
         # Проверка наличия и отображение таблицы файлов, если путь является директорией
         if 'path' in book_info and os.path.isdir(book_info['path']):
-            self.ui.fileTable.setVisible(True)
+            self.ui.BookInfoTab.fileTable.setVisible(True)
             self.update_file_table(self.current_book_id)
         else:
-            self.ui.fileTable.setVisible(False)
+            self.ui.BookInfoTab.fileTable.setVisible(False)
 
         # Активация кнопок
-        for button in self.ui.actionButtons:
+        for button in self.ui.BookInfoTab.actionButtons:
             button.setEnabled(True)
 
         self.update_cover(self.current_book_id)
 
     def clear_info_labels(self):
         # Очистка лейблов
-        self.ui.infoLabels[0].setText(f"Название:")
-        self.ui.infoLabels[1].setText(f"Автор:")
-        self.ui.infoLabels[2].setText(f"Жанр:")
-        self.ui.infoLabels[3].setText(f"Год:")
-        self.ui.infoLabels[4].setText(f"Чтец:")
-        self.ui.infoLabels[5].setText(f"Дата добавления:")
-        self.ui.infoLabels[6].setText(f"Описание:")
-        self.ui.fileTable.setVisible(False)
-        self.ui.imageScene.clear()
-        self.ui.imageScene.addText("Обложка не найдена")
+        self.ui.BookInfoTab.infoLabels[0].setText(f"Название:")
+        self.ui.BookInfoTab.infoLabels[1].setText(f"Автор:")
+        self.ui.BookInfoTab.infoLabels[2].setText(f"Жанр:")
+        self.ui.BookInfoTab.infoLabels[3].setText(f"Год:")
+        self.ui.BookInfoTab.infoLabels[4].setText(f"Чтец:")
+        self.ui.BookInfoTab.infoLabels[5].setText(f"Дата добавления:")
+        self.ui.BookInfoTab.infoLabels[6].setText(f"Описание:")
+        self.ui.BookInfoTab.fileTable.setVisible(False)
+        self.ui.BookInfoTab.imageScene.clear()
+        self.ui.BookInfoTab.imageScene.addText("Обложка не найдена")
 
         # Деактивация кнопок
-        for button in self.ui.actionButtons:
+        for button in self.ui.BookInfoTab.actionButtons:
             button.setEnabled(False)
 
     def update_completed_button(self):
         # Обновление состояния выполненного
         if self.current_is_completed:
-            self.ui.addCompletedButton.setText("Пометить как незавершенное")
-            self.ui.addCompletedButton.setStyleSheet("background-color: red;")
-            self.ui.addCompletedButton.clicked.disconnect()
-            self.ui.addCompletedButton.clicked.connect(self.mark_as_incomplete)
+            self.ui.BookInfoTab.addCompletedButton.setText("Пометить как незавершенное")
+            self.ui.BookInfoTab.addCompletedButton.setStyleSheet("background-color: red;")
+            self.ui.BookInfoTab.addCompletedButton.clicked.disconnect()
+            self.ui.BookInfoTab.addCompletedButton.clicked.connect(self.mark_as_incomplete)
 
         else:
-            self.ui.addCompletedButton.setText("Пометить как завершенное")
-            self.ui.addCompletedButton.setStyleSheet("background-color: green;")
-            self.ui.addCompletedButton.clicked.disconnect()
-            self.ui.addCompletedButton.clicked.connect(self.mark_as_complete)
+            self.ui.BookInfoTab.addCompletedButton.setText("Пометить как завершенное")
+            self.ui.BookInfoTab.addCompletedButton.setStyleSheet("background-color: green;")
+            self.ui.BookInfoTab.addCompletedButton.clicked.disconnect()
+            self.ui.BookInfoTab.addCompletedButton.clicked.connect(self.mark_as_complete)
 
     def mark_as_complete(self):
         # Изменение состояния выполненного в базе данных
@@ -175,16 +175,16 @@ class AudiobookCataloguerLogic:
     def update_favourite_button(self):
         # Обновление состояния избранного
         if self.current_is_favorite:
-            self.ui.addFavoriteButton.setText("Удалить из избранного")
-            self.ui.addFavoriteButton.setStyleSheet("background-color: red;")
-            self.ui.addFavoriteButton.clicked.disconnect()
-            self.ui.addFavoriteButton.clicked.connect(self.remove_from_favorites)
+            self.ui.BookInfoTab.addFavoriteButton.setText("Удалить из избранного")
+            self.ui.BookInfoTab.addFavoriteButton.setStyleSheet("background-color: red;")
+            self.ui.BookInfoTab.addFavoriteButton.clicked.disconnect()
+            self.ui.BookInfoTab.addFavoriteButton.clicked.connect(self.remove_from_favorites)
 
         else:
-            self.ui.addFavoriteButton.setText("Добавить в избранное")
-            self.ui.addFavoriteButton.setStyleSheet("background-color: green;")
-            self.ui.addFavoriteButton.clicked.disconnect()
-            self.ui.addFavoriteButton.clicked.connect(self.add_to_favorites)
+            self.ui.BookInfoTab.addFavoriteButton.setText("Добавить в избранное")
+            self.ui.BookInfoTab.addFavoriteButton.setStyleSheet("background-color: green;")
+            self.ui.BookInfoTab.addFavoriteButton.clicked.disconnect()
+            self.ui.BookInfoTab.addFavoriteButton.clicked.connect(self.add_to_favorites)
 
     def add_to_favorites(self):
         # Изменение состояния избранного в базе данных
@@ -205,10 +205,10 @@ class AudiobookCataloguerLogic:
     def update_file_table(self, book_id):
         files = self.audiobook_manager.get_audiobook_files(book_id)
         print(files)
-        self.ui.fileTable.setRowCount(len(files))  # Установка количества строк
+        self.ui.BookInfoTab.fileTable.setRowCount(len(files))  # Установка количества строк
         for index, (file_path, is_listened) in enumerate(files):
-            self.ui.fileTable.setItem(index, 0, QTableWidgetItem(os.path.basename(file_path)))
-            self.ui.fileTable.setItem(index, 1, QTableWidgetItem("Да" if is_listened else "Нет"))
+            self.ui.BookInfoTab.fileTable.setItem(index, 0, QTableWidgetItem(os.path.basename(file_path)))
+            self.ui.BookInfoTab.fileTable.setItem(index, 1, QTableWidgetItem("Да" if is_listened else "Нет"))
 
     def update_cover(self, book_id):
         try:
@@ -216,30 +216,30 @@ class AudiobookCataloguerLogic:
             if cover_data:
                 pixmap = QPixmap()
                 if pixmap.loadFromData(cover_data):
-                    self.ui.imageScene.clear()  # Очистка предыдущих изображений
-                    self.ui.imageScene.addPixmap(pixmap.scaled(150, 200, Qt.AspectRatioMode.KeepAspectRatio))
+                    self.ui.BookInfoTab.imageScene.clear()  # Очистка предыдущих изображений
+                    self.ui.BookInfoTab.imageScene.addPixmap(pixmap.scaled(150, 200, Qt.AspectRatioMode.KeepAspectRatio))
             else:
-                self.ui.imageScene.clear()
-                self.ui.imageScene.addText("Ошибка загрузки изображения")
+                self.ui.BookInfoTab.imageScene.clear()
+                self.ui.BookInfoTab.imageScene.addText("Ошибка загрузки изображения")
         except:
-            self.ui.imageScene.clear()
-            self.ui.imageScene.addText("Обложка не найдена")
+            self.ui.BookInfoTab.imageScene.clear()
+            self.ui.BookInfoTab.imageScene.addText("Обложка не найдена")
 
     def delete_audiobook(self):
         # Удаляем аудиокнигу из базы данных.
         self.audiobook_manager.delete_audiobook(self.current_book_id)
 
         # Удаляем строку из таблицы.
-        row = self.ui.audiobookTable.currentRow()
-        self.ui.audiobookTable.removeRow(row)
+        row = self.ui.CatalogPanel.audiobookTable.currentRow()
+        self.ui.CatalogPanel.audiobookTable.removeRow(row)
 
         # Проверяем состояние таблицы после удаления.
-        if row < self.ui.audiobookTable.rowCount():
+        if row < self.ui.CatalogPanel.audiobookTable.rowCount():
             # Если удалили не последнюю строку, показываем информацию о новой строке на этом месте.
             self.display_audiobook_info(row)
-        elif self.ui.audiobookTable.rowCount() > 0:
+        elif self.ui.CatalogPanel.audiobookTable.rowCount() > 0:
             # Если удалили последнюю строку, но в таблице ещё есть записи, показываем информацию о предыдущей строке.
-            self.display_audiobook_info(self.ui.audiobookTable.rowCount() - 1)
+            self.display_audiobook_info(self.ui.CatalogPanel.audiobookTable.rowCount() - 1)
         else:
             # Если строк больше нет, очищаем информацию о книге.
             self.display_audiobook_info(-1)
@@ -248,7 +248,7 @@ class AudiobookCataloguerLogic:
         pass
 
     def edit_book(self):
-        row = self.ui.audiobookTable.currentRow()
+        row = self.ui.CatalogPanel.audiobookTable.currentRow()
         if row == -1:
             QMessageBox.warning(self.ui, "Предупреждение", "Выберите книгу для редактирования")
             return
@@ -262,23 +262,23 @@ class AudiobookCataloguerLogic:
             self.update_current_book_info()
 
     def sort_changed(self):
-        currentText = self.ui.sortOptions.currentText()
+        currentText = self.ui.CatalogPanel.sortOptions.currentText()
         self.current_sort_option = field_map[currentText.lower()]
         self.update_audiobook_table(self.current_sort_option, self.sortAscending)
 
     def update_current_book_id(self, row):
         self.display_audiobook_info(row)
-        self.current_book_id = self.ui.audiobookTable.item(row, 0).text()
+        self.current_book_id = self.ui.CatalogPanel.audiobookTable.item(row, 0).text()
         print(row, self.current_book_id)
 
     def toggle_sort_direction(self):
         self.sortAscending = not self.sortAscending
         if self.sortAscending:
-            self.ui.sortDirectionButton.setText("⬆️")
+            self.ui.CatalogPanel.sortDirectionButton.setText("⬆️")
         else:
-            self.ui.sortDirectionButton.setText("⬇️")
+            self.ui.CatalogPanel.sortDirectionButton.setText("⬇️")
         self.sort_changed()
 
     def do_search(self):
-        search_text = self.ui.searchPanel.text()
+        search_text = self.ui.CatalogPanel.searchPanel.text()
         self.update_audiobook_table(self.current_sort_option, self.sortAscending, search_text)

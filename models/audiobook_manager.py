@@ -1,6 +1,6 @@
 from database.database import Database
 import os
-from controllers.data_extractor import extract_metadata, extract_cover_from_file, get_audio_files
+from models.data_extractor import extract_metadata, extract_cover_from_file, get_audio_files
 from config import DATABASE_AUDIOBOOKS_COLUMNS
 
 class AudiobookManager:

@@ -17,4 +17,12 @@ DATABASE_AUDIOBOOKS_COLUMNS = [
     'bitrate', 'duration', 'size', 'path'
 ]
 
-SORT_OPTIONS = ["Название", "Автор", "Битрейт"]
+SORT_OPTIONS = [
+    'Название',
+    'Автор',
+    'Год',
+    'Дата добавления',
+    'Битрейт',
+    'Длительность',
+    'Размер',
+]

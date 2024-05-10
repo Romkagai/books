@@ -1,5 +1,5 @@
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, TIT2, TPE1
+from mutagen.id3 import ID3
 import os
 
 
