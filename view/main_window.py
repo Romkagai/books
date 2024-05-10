@@ -50,5 +50,7 @@ class AudioBookCataloguer(QWidget):
         self.CatalogPanel.sortOptions.currentIndexChanged.connect(self.model.sort_changed)
         self.CatalogPanel.sortDirectionButton.clicked.connect(self.model.toggle_sort_direction)
         self.CatalogPanel.searchPanel.textChanged.connect(self.CatalogPanel.searchTimer.start)
+        self.CatalogPanel.searchTimer.timeout.connect(self.model.do_search)
+        self.SettingsTab.saveSettingsButton.clicked.connect(self.model.update_sort_panel)
 
         self.model.update_audiobook_table()

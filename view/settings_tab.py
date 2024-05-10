@@ -1,35 +1,36 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLabel, QComboBox, QLineEdit
+import json
+
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLabel, QComboBox, QLineEdit, QListWidget, QPushButton, \
+    QAbstractItemView, QMessageBox
+from config import SORT_OPTIONS
+from controllers.settings_handler import SettingsHandler
 
 
 class SettingsTab(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        self.setup_settings_tab(layout)
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        self.handler = SettingsHandler(self)
+        self.setup_settings_tab(self.layout)
 
     def setup_settings_tab(self, layout):
-        # Чекбоксы для отображения/скрытия столбцов
-        # self.columnCheckboxes = {name: QCheckBox(name) for name in ["ID", "Автор", "Название"]}
-        # for name, checkbox in self.columnCheckboxes.items():
-        #     checkbox.setChecked(True)
-        #     checkbox.stateChanged.connect(self.toggleColumnVisibility)
-        #     layout.addWidget(checkbox)
+        # Лейбл - название настройки
+        label = QLabel("Настройки сортировки")
+        self.layout.addWidget(label)
+        # Список для выбора параметров сортировки
+        self.create_sort_options(SORT_OPTIONS)
 
-        # Сортировка
-        sortLabel = QLabel("Сортировать по:")
-        self.sortOptions = QComboBox()
-        self.sortOptions.addItems(["ID", "Автор", "Название"])
-        layout.addWidget(sortLabel)
-        layout.addWidget(self.sortOptions)
+        # Кнопка для сохранения настроек
+        self.saveSettingsButton = QPushButton("Сохранить настройки")
+        self.saveSettingsButton.clicked.connect(lambda: self.handler.save_sorting_settings(self.checkboxes))
+        self.layout.addWidget(self.saveSettingsButton)
 
-        # Фильтрация
-        filterLabel = QLabel("Фильтр:")
-        self.filterOptions = QLineEdit()
-        layout.addWidget(filterLabel)
-        layout.addWidget(self.filterOptions)
+    def create_sort_options(self, options):
+        self.checkboxes = {}
+        for option in options:
+            checkbox = QCheckBox(option)
+            self.layout.addWidget(checkbox)
+            self.checkboxes[option] = checkbox
 
-    # def toggleColumnVisibility(self):
-    #     columns = ["ID", "Автор", "Название"]
-    #     for i, name in enumerate(columns):
-    #         self.audiobookTable.setColumnHidden(i, not self.columnCheckboxes[name].isChecked())
+        self.handler.apply_sorting_settings(self.checkboxes)

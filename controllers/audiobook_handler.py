@@ -245,7 +245,7 @@ class AudiobookCataloguerLogic:
             self.display_audiobook_info(-1)
 
     def do_nothing(self):
-        pass
+        print("Ничего не делаем")
 
     def edit_book(self):
         row = self.ui.CatalogPanel.audiobookTable.currentRow()
@@ -263,6 +263,7 @@ class AudiobookCataloguerLogic:
 
     def sort_changed(self):
         currentText = self.ui.CatalogPanel.sortOptions.currentText()
+        print(currentText)
         self.current_sort_option = field_map[currentText.lower()]
         self.update_audiobook_table(self.current_sort_option, self.sortAscending)
 
@@ -282,3 +283,12 @@ class AudiobookCataloguerLogic:
     def do_search(self):
         search_text = self.ui.CatalogPanel.searchPanel.text()
         self.update_audiobook_table(self.current_sort_option, self.sortAscending, search_text)
+
+    def update_sort_panel(self):
+        options = self.ui.SettingsTab.handler.get_enabled_sorting_options()
+        print(options)
+        self.ui.CatalogPanel.sortOptions.blockSignals(True)
+        self.ui.CatalogPanel.sortOptions.clear()
+        self.ui.CatalogPanel.sortOptions.addItems(options)
+        self.ui.CatalogPanel.sortOptions.blockSignals(False)
+

@@ -1,6 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QLabel, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QLabel, QLineEdit, QComboBox, QPushButton, QHBoxLayout, \
+    QHeaderView
 from PyQt6.QtCore import QTimer
 from config import SORT_OPTIONS
+
 
 class CatalogPanel(QWidget):
     def __init__(self):
@@ -22,7 +24,6 @@ class CatalogPanel(QWidget):
         self.searchTimer = QTimer()
         self.searchTimer.setInterval(300)
         self.searchTimer.setSingleShot(True)
-        # self.searchTimer.timeout.connect(self.model.do_search)  # Подключение к модели
 
         layout.addWidget(self.searchPanel)
 
