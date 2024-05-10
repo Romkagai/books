@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                              QHeaderView, QGraphicsView, QGraphicsScene)
 
 from controllers.audiobook_handler import AudiobookCataloguerLogic
+from config import SORT_OPTIONS
 
 
 class AudiobookCataloguer(QWidget):
@@ -43,13 +44,15 @@ class AudiobookCataloguer(QWidget):
 
     def setupConnections(self):
         self.addButton.clicked.connect(self.model.add_audiobook)
-        self.audiobookTable.cellClicked.connect(self.model.display_audiobook_info)
+        self.audiobookTable.cellClicked.connect(self.model.update_current_book_id)
         self.findBookInfoButton.clicked.connect(self.model.do_nothing)
         self.deleteButton.clicked.connect(self.model.delete_audiobook)
         self.addFavoriteButton.clicked.connect(self.model.do_nothing)
         self.addCompletedButton.clicked.connect(self.model.do_nothing)
         self.editButton.clicked.connect(self.model.edit_book)
         self.model.update_audiobook_table()
+        self.sortOptions.currentIndexChanged.connect(self.model.sort_changed)
+        self.sortDirectionButton.clicked.connect(self.model.toggle_sort_direction)
 
     def setupSearchPanel(self, layout):
         searchPanel = QLineEdit()
@@ -66,14 +69,14 @@ class AudiobookCataloguer(QWidget):
 
     def setupSortingControls(self, layout):
         sortLabel = QLabel("Сортировать по:")
-        sortOptions = QComboBox()
-        sortOptions.addItems(["Название", "Автор", "Битрейт"])
-        sortDirectionButton = QPushButton("⬆️⬇️")
+        self.sortOptions = QComboBox()
+        self.sortOptions.addItems(SORT_OPTIONS)
+        self.sortDirectionButton = QPushButton("⬆️")
 
         sortLayout = QHBoxLayout()
         sortLayout.addWidget(sortLabel)
-        sortLayout.addWidget(sortOptions)
-        sortLayout.addWidget(sortDirectionButton)
+        sortLayout.addWidget(self.sortOptions)
+        sortLayout.addWidget(self.sortDirectionButton)
         layout.addLayout(sortLayout)
 
         self.addButton = QPushButton("Добавить аудиокнигу")

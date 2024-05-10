@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QDialog, QLineEdit, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QMessageBox
-from config import BOOK_INFO_EDITOR_FIELD_MAP as field_map
+from config import DATABASE_FIELD_MAP as field_map
 
 class EditBookDialog(QDialog):
     def __init__(self, parent, book_info):
@@ -15,7 +15,7 @@ class EditBookDialog(QDialog):
         self.create_action_buttons()
 
     def create_input_fields(self):
-        labels = ['Название', 'Автор', 'Жанр', 'Год', 'Чтец', 'Дата добавления', 'Описание']
+        labels = ['Название', 'Автор', 'Жанр', 'Год', 'Чтец', 'Дата добавления', 'Описание', 'Битрейт']
         for label in labels:
             self.add_input_field(label)
 

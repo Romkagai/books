@@ -43,3 +43,9 @@ def extract_cover_from_file(file_path):
             cover_data = tag.data
             break
     return cover_data
+
+
+def get_audio_files(directory_path):
+    return [os.path.join(directory_path, f) for f in os.listdir(directory_path)
+            if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(
+            os.path.join(directory_path, f))]

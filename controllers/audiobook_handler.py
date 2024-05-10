@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 import os
 from controllers.audiobook_manager import AudiobookManager
 from ui.book_editor import EditBookDialog
+from config import DATABASE_FIELD_MAP as field_map, SORT_OPTIONS
 
 
 class AudiobookCataloguerLogic:
@@ -14,6 +15,9 @@ class AudiobookCataloguerLogic:
         self.current_book_id = None
         self.current_is_favorite = None
         self.current_is_completed = None
+        # Текущая опция сортировки
+        self.current_sort_option = field_map[SORT_OPTIONS[0].lower()]
+        self.sortAscending = True
 
     def add_audiobook(self):
         choice = self.prompt_audiobook_choice()
@@ -38,27 +42,26 @@ class AudiobookCataloguerLogic:
             book_id = self.audiobook_manager.get_book_id(file_path)
             print(file_path, book_id)
             self.audiobook_manager.import_file(file_path, book_id)
-            self.update_audiobook_table()
+            self.update_audiobook_table(self.current_sort_option)
 
     def add_directory(self):
         directory = QFileDialog.getExistingDirectory(self.ui, "Выберите папку с аудиофайлами")
         if directory:
-            files_to_add = self.get_audio_files(directory)
+            files_to_add = self.audiobook_manager.get_audio_files(directory)
             print(files_to_add)
             if files_to_add:
                 self.audiobook_manager.import_audiobook(files_to_add[0], directory)
                 book_id = self.audiobook_manager.get_book_id(directory)
                 for file_path in files_to_add:
                     self.audiobook_manager.import_file(file_path, book_id)
-                    self.update_audiobook_table()
+                    self.update_audiobook_table(self.current_sort_option)
 
-    def get_audio_files(self, directory):
-        return [os.path.join(directory, f) for f in os.listdir(directory)
-                if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(
-                os.path.join(directory, f))]
-
-    def update_audiobook_table(self):
-        records = self.audiobook_manager.get_audiobooks_list()
+    def update_audiobook_table(self, sort_by=None, ascending=None):
+        if sort_by is None:
+            sort_by = self.current_sort_option
+        if ascending is None:
+            ascending = self.sortAscending
+        records = self.audiobook_manager.get_audiobooks_list(sort_by, ascending)
         self.ui.audiobookTable.setRowCount(len(records))
 
         for index, (book_id, author, title) in enumerate(records):
@@ -72,21 +75,24 @@ class AudiobookCataloguerLogic:
             is_fav = self.audiobook_manager.is_favorite(book_id)
             is_completed = self.audiobook_manager.is_completed(book_id)
 
-            print(book_id, is_fav, is_completed)
+            print(book_id, is_fav, is_completed)  # Debug print, возможно, стоит убрать после тестирования.
 
+            # Обновляем информацию о текущей книге.
             if self.current_book_id != book_id:
                 self.current_book_id = book_id
                 self.update_current_book_info()
 
+            # Обновляем состояние кнопки "Избранное".
             if self.current_is_favorite != is_fav:
                 self.current_is_favorite = is_fav
                 self.update_favourite_button()
 
+            # Обновляем состояние кнопки "Завершено".
             if self.current_is_completed != is_completed:
                 self.current_is_completed = is_completed
                 self.update_completed_button()
-
         else:
+            # Очищаем информацию и деактивируем кнопки.
             self.clear_info_labels()
             for button in self.ui.actionButtons:
                 button.setEnabled(False)
@@ -219,14 +225,25 @@ class AudiobookCataloguerLogic:
             self.ui.imageScene.clear()
             self.ui.imageScene.addText("Обложка не найдена")
 
-    def delete_audiobook(self, row):
-        book_id = self.ui.audiobookTable.item(row, 0).text()
-        self.audiobook_manager.delete_audiobook(book_id)
+    def delete_audiobook(self):
+        # Удаляем аудиокнигу из базы данных.
+        self.audiobook_manager.delete_audiobook(self.current_book_id)
+
+        # Удаляем строку из таблицы.
+        row = self.ui.audiobookTable.currentRow()
         self.ui.audiobookTable.removeRow(row)
 
+        print("ПРОИСХОДИТ УДАЛЕНИЕ", row, self.current_book_id)
+
+        # Проверяем состояние таблицы после удаления.
         if row < self.ui.audiobookTable.rowCount():
+            # Если удалили не последнюю строку, показываем информацию о новой строке на этом месте.
             self.display_audiobook_info(row)
+        elif self.ui.audiobookTable.rowCount() > 0:
+            # Если удалили последнюю строку, но в таблице ещё есть записи, показываем информацию о предыдущей строке.
+            self.display_audiobook_info(self.ui.audiobookTable.rowCount() - 1)
         else:
+            # Если строк больше нет, очищаем информацию о книге.
             self.display_audiobook_info(-1)
 
     def do_nothing(self):
@@ -243,5 +260,23 @@ class AudiobookCataloguerLogic:
         dialog = EditBookDialog(self.ui, book_info)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.audiobook_manager.update_book_info(self.current_book_id, dialog.book_info)
-            self.update_audiobook_table()
+            self.update_audiobook_table(self.current_sort_option)
             self.update_current_book_info()
+
+    def sort_changed(self):
+        currentText = self.ui.sortOptions.currentText()
+        self.current_sort_option = field_map[currentText.lower()]
+        self.update_audiobook_table(self.current_sort_option, self.sortAscending)
+
+    def update_current_book_id(self, row):
+        self.display_audiobook_info(row)
+        self.current_book_id = self.ui.audiobookTable.item(row, 0).text()
+        print(row, self.current_book_id)
+
+    def toggle_sort_direction(self):
+        self.sortAscending = not self.sortAscending
+        if self.sortAscending:
+            self.ui.sortDirectionButton.setText("⬆️")
+        else:
+            self.ui.sortDirectionButton.setText("⬇️")
+        self.sort_changed()

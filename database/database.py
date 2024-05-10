@@ -64,9 +64,10 @@ class Database:
         self.connection.commit()
         self.close()
 
-    def get_audiobooks_list(self):
+    def get_audiobooks_list(self, sort_by, ascending):
         self.connect()
-        self.cursor.execute("SELECT book_id, author, title FROM audiobooks")
+        direction = "ASC" if ascending else "DESC"
+        self.cursor.execute(f"SELECT book_id, author, title FROM audiobooks ORDER BY {sort_by} {direction}")
         records = self.cursor.fetchall()
         self.close()
         return records
