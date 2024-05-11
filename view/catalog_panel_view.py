@@ -1,13 +1,13 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QLabel, QLineEdit, QComboBox, QPushButton, QHBoxLayout, \
     QHeaderView
 from PyQt6.QtCore import QTimer
-from config import SORT_OPTIONS
 
 
 class CatalogPanel(QWidget):
     def __init__(self):
         super().__init__()
         self.setupUI()
+
 
     def setupUI(self):
         layout = QVBoxLayout()
@@ -30,7 +30,6 @@ class CatalogPanel(QWidget):
     def setupSortingControls(self, layout):
         sortLabel = QLabel("Сортировать по:")
         self.sortOptions = QComboBox()
-        self.sortOptions.addItems(SORT_OPTIONS)
         self.sortDirectionButton = QPushButton("⬆️")
 
         sortLayout = QHBoxLayout()

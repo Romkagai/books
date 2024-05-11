@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QDialog, QLineEdit, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QMessageBox
-from config import DATABASE_FIELD_MAP as field_map
+from config import DATABASE_FIELD_MAP
+
 
 class EditBookDialog(QDialog):
     def __init__(self, parent, book_info):
@@ -20,7 +21,7 @@ class EditBookDialog(QDialog):
             self.add_input_field(label)
 
     def add_input_field(self, label):
-        key = field_map[label.lower()]  # Предполагается, что field_map правильно настроен
+        key = DATABASE_FIELD_MAP[label.lower()]
         row = QHBoxLayout()
         lbl = QLabel(f"{label}:")
         le = QLineEdit(self)
@@ -34,7 +35,7 @@ class EditBookDialog(QDialog):
         save_button = QPushButton("Сохранить")
         cancel_button = QPushButton("Отмена")
         save_button.clicked.connect(self.save)
-        cancel_button.clicked.connect(self.reject)  # Использует стандартный метод QDialog для отмены
+        cancel_button.clicked.connect(self.reject)
 
         self.layout().addWidget(save_button)
         self.layout().addWidget(cancel_button)
@@ -42,9 +43,8 @@ class EditBookDialog(QDialog):
     def save(self):
         try:
             for key, le in self.inputs.items():
-                field_name = field_map[key]
+                field_name = DATABASE_FIELD_MAP[key]
                 self.book_info[field_name] = le.text()
             self.accept()
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить изменения: {e}")
-

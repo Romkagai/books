@@ -4,14 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="new view configuration">
-      <change afterPath="$PROJECT_DIR$/controllers/settings_handler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/settings_manager.py" afterDir="false" />
+    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="new view configuration (???)">
+      <change afterPath="$PROJECT_DIR$/controllers/catalog_panel_controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/metadata_extractor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/catalog_panel_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/audiobook_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/audiobook_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/catalog_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/catalog_panel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/audiobook_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/book_info_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/settings_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/settings_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/audiobook_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/audiobookinfo_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/data_extractor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/settings_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/settings_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/about_tab.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/about_tab_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/book_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/book_editor_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/book_info_tab.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/book_info_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/catalog_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/catalog_panel_view.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/main_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/settings_tab.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/settings_tab.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/settings_tab.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/settings_tab_view.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715326260493</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="new view configuration (???)">
+      <option name="closed" value="true" />
+      <created>1715342900774</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1715342900774</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -189,6 +209,7 @@
     <MESSAGE value="v5" />
     <MESSAGE value="v6" />
     <MESSAGE value="new view configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="new view configuration" />
+    <MESSAGE value="new view configuration (???)" />
+    <option name="LAST_COMMIT_MESSAGE" value="new view configuration (???)" />
   </component>
 </project>

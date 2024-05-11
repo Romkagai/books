@@ -1,6 +1,7 @@
 import json
 
-class SettingsManager:
+
+class SettingsModel:
     def __init__(self, filename='settings.json'):
         self.filename = filename
 
@@ -15,3 +16,7 @@ class SettingsManager:
     def save_settings(self, settings):
         with open(self.filename, 'w', encoding='utf-8') as file:
             json.dump(settings, file, ensure_ascii=False, indent=4)
+
+    def get_enabled_sorting_options(self):
+        settings = self.load_settings()
+        return [option for option, enabled in settings['sorting'].items() if enabled]

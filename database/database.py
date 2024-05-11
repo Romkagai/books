@@ -64,6 +64,13 @@ class Database:
         self.connection.commit()
         self.close()
 
+    def check_audiobook_in_db(self, file_path):
+        self.connect()
+        self.cursor.execute("SELECT EXISTS(SELECT 1 FROM audiobooks WHERE path = ? LIMIT 1)", (file_path,))
+        exists = self.cursor.fetchone()[0]
+        self.close()
+        return exists
+
     def get_audiobooks_list(self, sort_by, ascending, search_text):
         self.connect()
         direction = "ASC" if ascending else "DESC"
@@ -122,7 +129,7 @@ class Database:
             create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_str})"
             self.cursor.execute(create_table_query)
             self.connection.commit()
-            print("Table created successfully:", table_name)
+            print("Table created (existed) successfully:", table_name)
         except sqlite3.Error as e:
             print("Error creating table:", e)
         self.close()
