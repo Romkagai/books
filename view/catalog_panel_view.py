@@ -43,16 +43,10 @@ class CatalogPanel(QWidget):
 
     def setupAudiobookTable(self, layout):
         self.audiobookTable = QTableWidget()
-        self.audiobookTable.setColumnCount(3)
-        self.audiobookTable.setHorizontalHeaderLabels(["ID", "Автор", "Название"])
         self.audiobookTable.verticalHeader().setVisible(False)
 
-        # Настройка шапки
         header = self.audiobookTable.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        header.resizeSection(0, 50)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         # Отключение редактирования
         self.audiobookTable.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)

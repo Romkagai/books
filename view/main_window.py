@@ -57,7 +57,8 @@ class AudioBookCataloguer(QWidget):
         self.catalog_panel_controller.book_selected.connect(self.audiobook_info_controller.update_selected_book_id)
         self.audiobook_info_controller.update_table.connect(self.catalog_panel_controller.update_audiobook_table)
         self.settings_controller.update_sort_settings.connect(self.catalog_panel_controller.update_sort_panel)
+        self.settings_controller.update_display_settings.connect(self.catalog_panel_controller.update_display_options)
 
     def load_app_settings(self):
-        self.settings_controller.load_app_settings()
+        self.settings_controller.setup_ui_state()
         self.catalog_panel_controller.update_audiobook_table()

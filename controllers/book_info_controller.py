@@ -34,8 +34,6 @@ class BookInfoController(QObject):
             is_fav = self.model.is_favorite(book_id)
             is_completed = self.model.is_completed(book_id)
 
-            print(book_id, is_fav, is_completed)  # Debug print, возможно, стоит убрать после тестирования.
-
             # Обновляем информацию о текущей книге.
             self.update_current_book_info()
 
@@ -101,25 +99,24 @@ class BookInfoController(QObject):
             button.setEnabled(False)
 
     def update_completed_button(self):
-        # Обновление состояния выполненного
-        def toggle_completed_button(self, is_completed):
-            # Устанавливаем текст и стиль кнопки в зависимости от состояния выполнения
-            if is_completed:
-                text = "Пометить как незавершенное"
-                color = "red"
-                new_handler = self.mark_as_incomplete
-            else:
-                text = "Пометить как завершенное"
-                color = "green"
-                new_handler = self.mark_as_complete
+        # Устанавливаем текст и стиль кнопки в зависимости от состояния выполнения
+        if self.current_is_completed:
+            text = "Пометить как незавершенное"
+            color = "red"
+            new_handler = self.mark_as_incomplete
+        else:
+            text = "Пометить как завершенное"
+            color = "green"
+            new_handler = self.mark_as_complete
 
-            # Обновляем свойства кнопки
-            self.view.addCompletedButton.setText(text)
-            self.view.addCompletedButton.setStyleSheet(f"background-color: {color};")
+        # Обновляем свойства кнопки
+        self.view.addCompletedButton.setText(text)
+        self.view.addCompletedButton.setStyleSheet(f"background-color: {color};")
 
-            # Переключаем обработчик событий
-            self.view.addCompletedButton.clicked.disconnect()
-            self.view.addCompletedButton.clicked.connect(new_handler)
+        # Переключаем обработчик событий
+        self.view.addCompletedButton.clicked.disconnect()
+        self.view.addCompletedButton.clicked.connect(new_handler)
+
 
     def mark_as_complete(self):
         # Изменение состояния выполненного в базе данных

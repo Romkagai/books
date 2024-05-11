@@ -4,45 +4,54 @@ from PyQt6.QtWidgets import QMessageBox
 
 class SettingsController(QObject):
     update_sort_settings = pyqtSignal(object)
-    save_requested = pyqtSignal(dict)
+    update_display_settings = pyqtSignal(object)
 
     def __init__(self, view, model):
         super().__init__()
         self.view = view
         self.model = model
+        self.setup_ui_state()
         self.setup_connections()
 
+    def setup_ui_state(self):
+        self.load_initial_settings()
+        self.emit_settings_to_view()
+
     def setup_connections(self):
-        # Подключаем сигналы view к слотам контроллера
-        self.save_requested.connect(self.save_new_settings)
-        self.view.saveSettingsButton.clicked.connect(self.emit_save_requested)
-        self.set_checkboxes()
+        self.view.saveSettingsButton.clicked.connect(self.save_settings)
 
-    def set_checkboxes(self):
-        settings = self.model.load_settings()
-        sorting_settings = settings.get('sorting', {})
+    def load_initial_settings(self):
+        sort_options = self.model.get_sorting_options()
+        display_options = self.model.get_display_options()
+
         for option, checkbox in self.view.sort_checkboxes.items():
-            checkbox.setChecked(sorting_settings.get(option, False))
+            checkbox.setChecked(sort_options.get(option, False))
 
+        for option, checkbox in self.view.table_display_checkboxes.items():
+            checkbox.setChecked(display_options.get(option, False))
 
-    def save_new_settings(self, checkbox_states):
-        settings = self.model.load_settings()
-
-        if not any(checkbox_states.values()):
-            QMessageBox.warning(self.view, "Настройки", "Должна быть выбрана хотя бы одна опция сортировки!")
-            first_option = next(iter(checkbox_states))
-            self.view.sort_checkboxes[first_option].setChecked(True)
-            checkbox_states[first_option] = True
-        settings['sorting'] = checkbox_states
-        self.model.save_settings(settings)
+    def emit_settings_to_view(self):
+        print(self.model.get_enabled_sorting_options())
         self.update_sort_settings.emit(self.model.get_enabled_sorting_options())
-        QMessageBox.information(self.view, "Настройки", "Настройки сохранены!")
+        self.update_display_settings.emit(self.model.get_enabled_display_options())
 
-    def load_app_settings(self):
-        self.update_sort_settings.emit(self.model.get_enabled_sorting_options())
+    def save_settings(self):
+        sort_options = {option: checkbox.isChecked() for option, checkbox in self.view.sort_checkboxes.items()}
+        display_options = {option: checkbox.isChecked() for option, checkbox in self.view.table_display_checkboxes.items()}
 
-    def emit_save_requested(self):
-        # Испускаем сигнал с текущим состоянием чекбоксов
-        checkbox_states = {option: checkbox.isChecked() for option, checkbox in self.view.sort_checkboxes.items()}
-        self.save_requested.emit(checkbox_states)
+        # Проверяем, что хотя бы одна опция в каждом разделе включена
+        if not any(sort_options.values()):
+            first_sort_option = next(iter(self.view.sort_checkboxes))
+            self.view.sort_checkboxes[first_sort_option].setChecked(True)
+            sort_options[first_sort_option] = True
+            QMessageBox.warning(self.view, "Настройки сортировки", "Должна быть выбрана хотя бы одна опция сортировки!")
+
+        if not any(display_options.values()):
+            first_display_option = next(iter(self.view.table_display_checkboxes))
+            self.view.table_display_checkboxes[first_display_option].setChecked(True)
+            display_options[first_display_option] = True
+            QMessageBox.warning(self.view, "Настройки отображения", "Должна быть выбрана хотя бы одна опция отображения!")
+
+        self.model.save_settings(sort_options, display_options)
+        self.emit_settings_to_view()
 

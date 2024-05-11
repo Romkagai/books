@@ -1,32 +1,51 @@
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLabel, QPushButton, QGroupBox, QScrollArea, QHBoxLayout
 
 from config import SORT_OPTIONS, COLUMN_OPTIONS
 
-
 class SettingsTab(QWidget):
-    # Определяем сигналы
-
-
     def __init__(self):
         super().__init__()
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
-        self.setup_settings_tab()
+        self.layout = QVBoxLayout(self)
+        self.setup_ui()
 
-    def setup_settings_tab(self):
-        sort_label = QLabel("Опции сортировки:")
-        self.layout.addWidget(sort_label)
-        self.create_sort_options()
+    def setup_ui(self):
+        # Создание скроллируемой области
+        scroll_area = QScrollArea(self)
+        scroll_area.setWidgetResizable(True)
+        scroll_widget = QWidget()
+        scroll_area.setWidget(scroll_widget)
+        scroll_layout = QVBoxLayout(scroll_widget)
 
-        self.saveSettingsButton = QPushButton("Сохранить настройки")
-        self.layout.addWidget(self.saveSettingsButton)
-
-    def create_sort_options(self):
+        # Добавление групп для настроек сортировки
+        sorting_group = QGroupBox("Опции сортировки:")
+        sorting_layout = QVBoxLayout(sorting_group)
         self.sort_checkboxes = {}
-        for option in SORT_OPTIONS:
+        self.add_sort_checkboxes(SORT_OPTIONS, sorting_layout)
+        scroll_layout.addWidget(sorting_group)
+
+        # Добавление групп для настроек отображения столбцов
+        display_group = QGroupBox("Настройки отображения столбцов")
+        display_layout = QVBoxLayout(display_group)
+        self.table_display_checkboxes = {}
+        self.add_table_display_checkboxes(COLUMN_OPTIONS, display_layout)
+        scroll_layout.addWidget(display_group)
+
+        # Кнопка сохранения
+        self.saveSettingsButton = QPushButton("Сохранить настройки")
+        scroll_layout.addWidget(self.saveSettingsButton)
+
+        # Добавление скроллируемой области в основной layout
+        self.layout.addWidget(scroll_area)
+
+    def add_sort_checkboxes(self, options, layout):
+        for option in options:
             checkbox = QCheckBox(option)
-            self.layout.addWidget(checkbox)
+            layout.addWidget(checkbox)
             self.sort_checkboxes[option] = checkbox
 
-
+    def add_table_display_checkboxes(self, options, layout):
+        for option in options:
+            checkbox = QCheckBox(option)
+            layout.addWidget(checkbox)
+            self.table_display_checkboxes[option] = checkbox

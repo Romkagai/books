@@ -1,5 +1,5 @@
 from PyQt6.QtCore import pyqtSignal, QObject
-from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QHeaderView
 from config import DATABASE_FIELD_MAP
 
 
@@ -17,6 +17,8 @@ class CatalogPanelController(QObject):
         self.sortAscending = True
         # Текущая книга
         self.last_selected_item = None
+        # Текущие опции отображения колонок
+        self.current_display_options = None
 
     def new_item_clicked(self, row):
         book_id = self.view.audiobookTable.item(row, 0).text()
@@ -25,11 +27,16 @@ class CatalogPanelController(QObject):
             self.book_selected.emit(row, book_id)
 
     def update_sort_panel(self, options):
-        self.current_sort_option = DATABASE_FIELD_MAP[options[0].lower()]
+        self.current_sort_option = self.model.get_option_by_name(options[0])
         self.view.sortOptions.blockSignals(True)
         self.view.sortOptions.clear()
         self.view.sortOptions.addItems(options)
         self.view.sortOptions.blockSignals(False)
+
+    def update_display_options(self, options):
+        self.current_display_options = options
+        self.update_audiobook_table()
+        self.view.searchPanel.clear()
 
     def do_search(self):
         search_text = self.view.searchPanel.text()
@@ -45,21 +52,33 @@ class CatalogPanelController(QObject):
 
     def sort_changed(self):
         currentText = self.view.sortOptions.currentText()
-        self.current_sort_option = DATABASE_FIELD_MAP[currentText.lower()]
+        self.current_sort_option = self.model.get_option_by_name(currentText)
         self.update_audiobook_table(self.current_sort_option, self.sortAscending)
 
-    def update_audiobook_table(self, sort_by=None, ascending=None, search_text=""):
+    def update_audiobook_table(self, sort_by=None, ascending=None, search_text="", display_options=None):
+        if display_options is None:
+            display_options = self.current_display_options
         if sort_by is None:
             sort_by = self.current_sort_option
         if ascending is None:
             ascending = self.sortAscending
-        records = self.model.get_audiobooks_list(sort_by, ascending, search_text)
+
+        records = self.model.get_audiobooks_list(sort_by, ascending, search_text, display_options)
+
+        self.view.audiobookTable.setColumnCount(len(display_options) + 1)
+        self.view.audiobookTable.setHorizontalHeaderLabels(['ID'] + display_options)
         self.view.audiobookTable.setRowCount(len(records))
 
-        for index, (book_id, author, title) in enumerate(records):
-            self.view.audiobookTable.setItem(index, 0, QTableWidgetItem(str(book_id)))
-            self.view.audiobookTable.setItem(index, 1, QTableWidgetItem(author))
-            self.view.audiobookTable.setItem(index, 2, QTableWidgetItem(title))
+        # header = self.view.audiobookTable.horizontalHeader()
+        # for col in range(len(display_options)):
+        #     header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)
+
+        for row_idx, record in enumerate(records):
+            for col_idx, field in enumerate(record):
+                self.view.audiobookTable.setItem(row_idx, col_idx, QTableWidgetItem(str(field)))
+
+        # Скрываем столбец с book_id
+        self.view.audiobookTable.setColumnHidden(0, True)
 
     def add_audiobook(self):
         choice = self.prompt_audiobook_choice()

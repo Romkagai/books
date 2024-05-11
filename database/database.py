@@ -71,11 +71,11 @@ class Database:
         self.close()
         return exists
 
-    def get_audiobooks_list(self, sort_by, ascending, search_text):
+    def get_audiobooks_list(self, sort_by, ascending, search_query, fields):
         self.connect()
         direction = "ASC" if ascending else "DESC"
-        self.cursor.execute(f"SELECT book_id, author, title FROM audiobooks "
-                            f"WHERE title LIKE '%{search_text}%' OR author LIKE '%{search_text}%' "
+        self.cursor.execute(f"SELECT {fields} FROM audiobooks "
+                            f"WHERE {search_query} "
                             f"ORDER BY {sort_by} {direction}")
         records = self.cursor.fetchall()
         self.close()

@@ -1,5 +1,6 @@
 from database.database import Database
 from helpers.metadata_extractor import extract_metadata, get_audio_files
+from config import DATABASE_FIELD_MAP
 import os
 
 class CatalogPanelModel:
@@ -31,8 +32,21 @@ class CatalogPanelModel:
     def import_file(self, file_path, book_id):
         self.db.add_audiobook_file_to_db(file_path, book_id)
 
-    def get_audiobooks_list(self, sort_by, ascending, search_text):
-        return self.db.get_audiobooks_list(sort_by, ascending, search_text)
+    def get_audiobooks_list(self, sort_by, ascending, search_text, display_options):
+        field_names = ['book_id']  # Всегда включаем book_id
+        search_fields = []
+
+        for option in display_options:
+            if option.lower() in DATABASE_FIELD_MAP:
+                db_field = DATABASE_FIELD_MAP[option.lower()]
+                field_names.append(db_field)
+                search_fields.append(f"{db_field} LIKE '%{search_text}%'")
+
+        fields = ", ".join(field_names)
+        search_query = " OR ".join(
+            search_fields) if search_fields else "1=1"  # Если нет полей для поиска, возвращаем все записи
+
+        return self.db.get_audiobooks_list(sort_by, ascending, search_query, fields)
 
     def get_audio_files(self, file_path):
         return get_audio_files(file_path)
@@ -42,3 +56,7 @@ class CatalogPanelModel:
 
     def audiobook_exists(self, file_path):
         return self.db.check_audiobook_in_db(file_path)
+
+    def get_option_by_name(self, option):
+        sort_option = DATABASE_FIELD_MAP[option.lower()]
+        return sort_option
