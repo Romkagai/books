@@ -114,7 +114,6 @@ class CatalogPanelController(QObject):
         if directory:
             if not self.model.audiobook_exists(directory):
                 files_to_add = self.model.get_audio_files(directory)
-                print(files_to_add)
                 if files_to_add:
                     self.model.import_audiobook(files_to_add[0], directory)
                     book_id = self.model.get_book_id(directory)

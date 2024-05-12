@@ -1,9 +1,9 @@
 {
     "sort_options": {
         "Название": true,
-        "Автор": true,
-        "Год": true,
-        "Жанр": true,
+        "Автор": false,
+        "Год": false,
+        "Жанр": false,
         "Чтец": false,
         "Дата добавления": false,
         "Битрейт": false,
@@ -14,7 +14,7 @@
         "Название": true,
         "Автор": true,
         "Год": true,
-        "Жанр": true,
+        "Жанр": false,
         "Чтец": false,
         "Дата добавления": false,
         "Битрейт": false,
@@ -24,14 +24,14 @@
     "book_info_options": {
         "Название": true,
         "Автор": true,
-        "Год": true,
-        "Жанр": true,
-        "Чтец": true,
+        "Год": false,
+        "Жанр": false,
+        "Чтец": false,
         "Дата добавления": false,
         "Описание": false,
         "Битрейт": false,
         "Длительность": false,
-        "Размер": true,
+        "Размер": false,
         "Путь": false
     }
 }

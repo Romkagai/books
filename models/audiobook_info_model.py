@@ -18,6 +18,7 @@ class AudioBookInfoModel:
         print(column_options)
 
         book_info = self.db.get_book_optional_info_by_id(book_id, column_options)
+
         if book_info:
             return dict(zip(options, book_info))
         return None
@@ -52,3 +53,6 @@ class AudioBookInfoModel:
 
     def update_book_info(self, book_id, book_info):
         self.db.update_book_info(book_id, book_info)
+
+    def get_all_book_info_options(self):
+        return BOOK_INFO_OPTIONS

@@ -15,42 +15,50 @@ class AudiobookInfoController(QObject):
         self.view = view
         self.model = model
         self.setup_connections()
-        # Текущая книга
-        self.current_book_id = None
+
         self.current_row = None
         self.current_is_favorite = None
         self.current_is_completed = None
-        # Выводимая информация о текущей книге
+
         self.current_book_info_options = None
 
-    def update_info_labels(self):
-        # Удаление текущих лейблов
-        for label in self.view.infoLabels.values():
-            label.deleteLater()
-        self.view.infoLabels.clear()
+        self.init_info_labels()
 
-        # Добавление новых лейблов согласно текущим опциям
-        for option in self.current_book_info_options:
+    # Создаем список всех лейблов
+    def init_info_labels(self):
+        all_options = self.model.get_all_book_info_options()
+        for option in all_options:
             label = QLabel(f"{option}")
             label.setWordWrap(True)
             label.setMaximumWidth(200)
+            label.setVisible(False)  # Изначально все лейблы скрыты
             self.view.infoLabels[option] = label
             self.view.infoLabelsLayout.addWidget(label)
 
+    # Пришел сигнал об обновлении настроек отображаемых лейблов
+    def update_book_info_options(self, options):
+        self.current_book_info_options = options
+        self.update_info_labels()
+
+    # Обновление отображаемых лейблов
+    def update_info_labels(self):
+        all_labels = set(self.view.infoLabels.keys())
+        visible_labels = set(self.current_book_info_options)
+
+        # Сделаем видимыми только нужные лейблы и скроем остальные
+        for label in all_labels:
+            if label in visible_labels:
+                self.view.infoLabels[label].setVisible(True)
+            else:
+                self.view.infoLabels[label].setVisible(False)
+
+    # Выбрана книга в таблице
     def update_selected_book_id(self, row, book_id):
         self.current_row = row
         self.current_book_id = book_id
         self.display_audiobook_info()
 
-    def update_book_info_options(self, options):
-        self.current_book_info_options = options
-        self.update_info_labels()
-
-        if self.current_book_id is not None:
-            self.update_current_book_info()
-
     def display_audiobook_info(self, bookExists=True):
-        self.update_info_labels()
         if bookExists:
             book_id = self.current_book_id
             is_fav = self.model.is_favorite(book_id)
@@ -71,16 +79,14 @@ class AudiobookInfoController(QObject):
         else:
             # Очищаем информацию и деактивируем кнопки.
             self.clear_info_labels()
-            for button in self.view.actionButtons:
-                button.setEnabled(False)
+            self.deactivate_buttons()
 
     def update_current_book_info(self):
-        book_info = self.model.get_book_info_by_id(self.current_book_id, self.current_book_info_options)
-        self.clear_info_labels()
+        book_info = self.model.get_book_info_by_id(self.current_book_id)
 
-        for label in self.view.infoLabels.values():
-            label.setText(
-                label.text() + ": " + str(book_info[label.text()]))
+        for key, label in self.view.infoLabels.items():
+            if key in book_info:
+                label.setText(f"{key}: {book_info[key]}")
 
         # Проверка наличия и отображение таблицы файлов, если путь является директорией
         if 'Путь' in book_info and os.path.isdir(book_info['Путь']):
@@ -100,9 +106,8 @@ class AudiobookInfoController(QObject):
             label.setText(f"{key}")
         self.view.fileTable.setVisible(False)
         self.view.imageScene.clear()
-        self.view.imageScene.addText("Обложка не найдена")
-        for button in self.view.actionButtons:
-            button.setEnabled(False)
+        self.view.imageScene.addText("Выберите книгу")
+
 
     def update_cover(self, book_id):
         try:
@@ -122,7 +127,6 @@ class AudiobookInfoController(QObject):
 
     def update_file_table(self, book_id):
         files = self.model.get_audiobook_files(book_id)
-        print(files)
         self.view.fileTable.setRowCount(len(files))  # Установка количества строк
         for index, (file_path, is_listened) in enumerate(files):
             self.view.fileTable.setItem(index, 0, QTableWidgetItem(os.path.basename(file_path)))
@@ -132,11 +136,21 @@ class AudiobookInfoController(QObject):
         # Удаляем аудиокнигу из базы данных.
         self.model.delete_audiobook(self.current_book_id)
 
+        # Удаляем аудиокнигу
+        self.current_book_id = None
+
         # Попросим контроллер таблицы её обновить
         self.update_table.emit()
 
         # Обновляем информацию о текущей книге
-        self.update_current_book_info()
+        self.clear_info_labels()
+
+        # Деактивируем кнопки
+        self.deactivate_buttons()
+
+    def deactivate_buttons(self):
+        for button in self.view.actionButtons:
+            button.setEnabled(False)
 
     def update_completed_button(self):
         # Устанавливаем текст и стиль кнопки в зависимости от состояния выполнения
@@ -209,10 +223,9 @@ class AudiobookInfoController(QObject):
         self.update_favourite_button()
 
     def edit_book(self):
-        book_info = self.model.get_book_info_by_id(self.current_book_id)
+        book_info = self.model.get_book_info_by_id(self.current_book_id, self.model.get_all_book_info_options()[:-1])
 
         dialog = EditBookDialog(self.view, book_info)
-        print(book_info)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.model.update_book_info(self.current_book_id, dialog.book_info)
             self.update_table.emit()

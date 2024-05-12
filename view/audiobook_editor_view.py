@@ -44,7 +44,6 @@ class EditBookDialog(QDialog):
         try:
             updated_info = {}
             for key, le in self.inputs.items():
-                print(key, le)
                 updated_info[DATABASE_FIELD_MAP.get(key, key)] = le.text()
             self.book_info = updated_info
             self.accept()

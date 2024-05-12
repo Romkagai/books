@@ -36,7 +36,6 @@ class SettingsController(QObject):
             checkbox.setChecked(book_info_options.get(option, False))
 
     def emit_settings_to_view(self):
-        print(self.model.get_enabled_sorting_options())
         self.update_sort_settings.emit(self.model.get_enabled_sorting_options())
         self.update_display_settings.emit(self.model.get_enabled_display_options())
         self.update_book_info_settings.emit(self.model.get_enabled_book_info_options())
