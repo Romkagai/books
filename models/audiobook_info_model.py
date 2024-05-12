@@ -1,17 +1,25 @@
 from database.database import Database
 import os
 from helpers.metadata_extractor import extract_cover_from_file
-from config import DATABASE_AUDIOBOOKS_COLUMNS
+from config import DATABASE_AUDIOBOOKS_COLUMNS, DATABASE_FIELD_MAP, BOOK_INFO_OPTIONS
 
 
 class AudioBookInfoModel:
     def __init__(self):
         self.db = Database("database.db")
 
-    def get_book_info_by_id(self, book_id):
-        book_info = self.db.get_book_info_by_id(book_id)
+    def get_book_info_by_id(self, book_id, options=BOOK_INFO_OPTIONS):
+        column_options = []
+        for option in options:
+            if option.lower() in DATABASE_FIELD_MAP:
+                db_field = DATABASE_FIELD_MAP[option.lower()]
+                column_options.append(db_field)
+
+        print(column_options)
+
+        book_info = self.db.get_book_optional_info_by_id(book_id, column_options)
         if book_info:
-            return dict(zip(DATABASE_AUDIOBOOKS_COLUMNS, book_info))
+            return dict(zip(options, book_info))
         return None
 
     def get_audiobook_files(self, book_id):

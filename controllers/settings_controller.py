@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QMessageBox
 class SettingsController(QObject):
     update_sort_settings = pyqtSignal(object)
     update_display_settings = pyqtSignal(object)
+    update_book_info_settings = pyqtSignal(object)
 
     def __init__(self, view, model):
         super().__init__()
@@ -23,6 +24,7 @@ class SettingsController(QObject):
     def load_initial_settings(self):
         sort_options = self.model.get_sorting_options()
         display_options = self.model.get_display_options()
+        book_info_options = self.model.get_book_info_options()
 
         for option, checkbox in self.view.sort_checkboxes.items():
             checkbox.setChecked(sort_options.get(option, False))
@@ -30,14 +32,19 @@ class SettingsController(QObject):
         for option, checkbox in self.view.table_display_checkboxes.items():
             checkbox.setChecked(display_options.get(option, False))
 
+        for option, checkbox in self.view.book_info_checkboxes.items():
+            checkbox.setChecked(book_info_options.get(option, False))
+
     def emit_settings_to_view(self):
         print(self.model.get_enabled_sorting_options())
         self.update_sort_settings.emit(self.model.get_enabled_sorting_options())
         self.update_display_settings.emit(self.model.get_enabled_display_options())
+        self.update_book_info_settings.emit(self.model.get_enabled_book_info_options())
 
     def save_settings(self):
         sort_options = {option: checkbox.isChecked() for option, checkbox in self.view.sort_checkboxes.items()}
         display_options = {option: checkbox.isChecked() for option, checkbox in self.view.table_display_checkboxes.items()}
+        book_info_options = {option: checkbox.isChecked() for option, checkbox in self.view.book_info_checkboxes.items()}
 
         # Проверяем, что хотя бы одна опция в каждом разделе включена
         if not any(sort_options.values()):
@@ -50,8 +57,16 @@ class SettingsController(QObject):
             first_display_option = next(iter(self.view.table_display_checkboxes))
             self.view.table_display_checkboxes[first_display_option].setChecked(True)
             display_options[first_display_option] = True
-            QMessageBox.warning(self.view, "Настройки отображения", "Должна быть выбрана хотя бы одна опция отображения!")
+            QMessageBox.warning(self.view, "Настройки отображения", "Должна быть выбрана хотя бы одна опция "
+                                                                    "отображения!")
 
-        self.model.save_settings(sort_options, display_options)
+        if not any(book_info_options.values()):
+            first_book_info_option = next(iter(self.view.book_info_checkboxes))
+            self.view.book_info_checkboxes[first_book_info_option].setChecked(True)
+            book_info_options[first_book_info_option] = True
+            QMessageBox.warning(self.view, "Настройки отображения", "Должна быть выбрана хотя бы одна опция "
+                                                                    "отображения!")
+
+        self.model.save_settings(sort_options, display_options, book_info_options)
         self.emit_settings_to_view()
 

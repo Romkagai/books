@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QTabWidget
-from view.book_info_view import BookInfoTab
+from view.audiobook_info_view import BookInfoTab
 from view.settings_tab_view import SettingsTab
 from view.about_tab_view import AboutTab
 from view.catalog_panel_view import CatalogPanel
@@ -22,7 +22,7 @@ class AudioBookCataloguer(QWidget):
         self.setLayout(self.mainLayout)
 
     def setup_models(self):
-        from models.audiobookinfo_model import AudioBookInfoModel
+        from models.audiobook_info_model import AudioBookInfoModel
         from models.settings_model import SettingsModel
         from models.catalog_panel_model import CatalogPanelModel
         self.audiobook_info_model = AudioBookInfoModel()
@@ -31,9 +31,9 @@ class AudioBookCataloguer(QWidget):
 
     def setup_controllers(self):
         from controllers.settings_controller import SettingsController
-        from controllers.book_info_controller import BookInfoController
+        from controllers.audiobook_info_controller import AudiobookInfoController
         from controllers.catalog_panel_controller import CatalogPanelController
-        self.audiobook_info_controller = BookInfoController(self.BookInfoTab, self.audiobook_info_model)
+        self.audiobook_info_controller = AudiobookInfoController(self.BookInfoTab, self.audiobook_info_model)
         self.settings_controller = SettingsController(self.SettingsTab, self.settings_model)
         self.catalog_panel_controller = CatalogPanelController(self.CatalogPanel, self.catalog_panel_model)
 
@@ -58,6 +58,7 @@ class AudioBookCataloguer(QWidget):
         self.audiobook_info_controller.update_table.connect(self.catalog_panel_controller.update_audiobook_table)
         self.settings_controller.update_sort_settings.connect(self.catalog_panel_controller.update_sort_panel)
         self.settings_controller.update_display_settings.connect(self.catalog_panel_controller.update_display_options)
+        self.settings_controller.update_book_info_settings.connect(self.audiobook_info_controller.update_book_info_options)
 
     def load_app_settings(self):
         self.settings_controller.setup_ui_state()

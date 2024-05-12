@@ -27,15 +27,9 @@ class BookInfoTab(QWidget):
 
     # Настройка лэйблов (информации о книге)
     def setupInfoLabels(self, layout):
-        infoLayout = QVBoxLayout()
-        labels = ["Название", "Автор", "Жанр", "Год", "Чтец", "Дата добавления", "Описание"]
-        self.infoLabels = [QLabel(label) for label in labels]
-        max_label_width = 200
-        for label in self.infoLabels:
-            label.setWordWrap(True)
-            label.setMaximumWidth(max_label_width)
-            infoLayout.addWidget(label)
-        layout.addLayout(infoLayout)
+        self.infoLabels = {}
+        self.infoLabelsLayout = QVBoxLayout()
+        layout.addLayout(self.infoLabelsLayout)
 
     # Настройка кнопок
     def setupActionButtons(self, layout):

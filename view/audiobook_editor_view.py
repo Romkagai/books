@@ -16,20 +16,20 @@ class EditBookDialog(QDialog):
         self.create_action_buttons()
 
     def create_input_fields(self):
-        labels = ['Название', 'Автор', 'Жанр', 'Год', 'Чтец', 'Дата добавления', 'Описание', 'Битрейт']
-        for label in labels:
-            self.add_input_field(label)
+        for label, value in self.book_info.items():
+            self.add_input_field(label, value)
 
-    def add_input_field(self, label):
-        key = DATABASE_FIELD_MAP[label.lower()]
+    def add_input_field(self, label, value):
+        # Преобразование пользовательского ключа к ключу в базе данных
+        key = DATABASE_FIELD_MAP.get(label.lower(), label.lower())  # используем в качестве ключа оригинальный ключ, если он отсутствует в карте
         row = QHBoxLayout()
         lbl = QLabel(f"{label}:")
         le = QLineEdit(self)
-        le.setText(str(self.book_info.get(key, "")))
+        le.setText(str(value))  # значение из словаря напрямую, предполагается что оно уже правильное
         row.addWidget(lbl)
         row.addWidget(le)
         self.layout().addLayout(row)
-        self.inputs[label.lower()] = le
+        self.inputs[key] = le
 
     def create_action_buttons(self):
         save_button = QPushButton("Сохранить")
@@ -42,9 +42,11 @@ class EditBookDialog(QDialog):
 
     def save(self):
         try:
+            updated_info = {}
             for key, le in self.inputs.items():
-                field_name = DATABASE_FIELD_MAP[key]
-                self.book_info[field_name] = le.text()
+                print(key, le)
+                updated_info[DATABASE_FIELD_MAP.get(key, key)] = le.text()
+            self.book_info = updated_info
             self.accept()
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить изменения: {e}")

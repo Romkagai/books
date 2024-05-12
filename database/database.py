@@ -95,9 +95,11 @@ class Database:
         self.close()
         return book_id
 
-    def get_book_info_by_id(self, book_id):
+    def get_book_optional_info_by_id(self, book_id, columns):
         self.connect()
-        self.cursor.execute("SELECT * FROM audiobooks WHERE book_id = (?)", (book_id,))
+        columns_str = ', '.join(columns)
+        print(columns_str)
+        self.cursor.execute(f"SELECT {columns_str} FROM audiobooks WHERE book_id = {book_id}")
         book_info = self.cursor.fetchone()
         self.close()
         return book_info
