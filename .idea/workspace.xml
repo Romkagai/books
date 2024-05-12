@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="ошибка с получением пути (с горем пополам)">
+    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="Обработано редактирование, добавлены настройки отображаемой информации">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/audiobook_info_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/audiobook_info_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/catalog_panel_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/catalog_panel_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/settings_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/settings_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/audiobook_info_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/audiobook_info_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/audiobook_editor_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/audiobook_editor_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/audiobook_info_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/audiobook_info_view.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +56,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.main.executor": "Debug",
+    "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "new-view-configuration",
     "ignore.virus.scanning.warn.message": "true",
@@ -214,7 +213,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715499797296</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Обработано редактирование, добавлены настройки отображаемой информации">
+      <option name="closed" value="true" />
+      <created>1715504065884</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1715504065884</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -228,7 +235,8 @@
     <MESSAGE value="cool mvc architecture" />
     <MESSAGE value="huge settings update" />
     <MESSAGE value="ошибка с получением пути (с горем пополам)" />
-    <option name="LAST_COMMIT_MESSAGE" value="ошибка с получением пути (с горем пополам)" />
+    <MESSAGE value="Обработано редактирование, добавлены настройки отображаемой информации" />
+    <option name="LAST_COMMIT_MESSAGE" value="Обработано редактирование, добавлены настройки отображаемой информации" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

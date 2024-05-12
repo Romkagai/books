@@ -52,7 +52,17 @@ class AudioBookInfoModel:
         self.db.mark_as_incompleted(book_id)
 
     def update_book_info(self, book_id, book_info):
-        self.db.update_book_info(book_id, book_info)
+        db_book_info = {}
+        for key, value in book_info.items():
+            # Преобразуем ключи используя маппинг, чтобы соответствовать столбцам в БД
+            db_key = DATABASE_FIELD_MAP.get(key.lower(),
+                                            key)  # На случай, если маппинг не найден, используем оригинальный ключ
+            db_book_info[db_key] = value
+
+        self.db.update_book_info(book_id, db_book_info)
+
+    def update_listened_status(self, state, file_path):
+        self.db.update_listened_status(state, file_path)
 
     def get_all_book_info_options(self):
         return BOOK_INFO_OPTIONS

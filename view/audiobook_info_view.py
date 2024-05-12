@@ -37,7 +37,8 @@ class BookInfoTab(QWidget):
                               QPushButton("Удалить"),
                               QPushButton("Добавить в избранное"),
                               QPushButton("Пометить как завершенное"),
-                              QPushButton("Редактировать")]
+                              QPushButton("Редактировать"),
+                              QPushButton("Открыть папку с аудиокнигой")]
         for button in self.actionButtons:
             layout.addWidget(button)
             button.setEnabled(False)
@@ -47,6 +48,7 @@ class BookInfoTab(QWidget):
         self.addFavoriteButton = self.actionButtons[2]
         self.addCompletedButton = self.actionButtons[3]
         self.editButton = self.actionButtons[4]
+        self.openAudiobookButton = self.actionButtons[5]
 
     # Настройка таблицы с файлами (файлы аудиокниги)
     def setupFileTable(self, layout):

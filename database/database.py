@@ -48,7 +48,8 @@ class Database:
                                 "duration, size, path) VALUES ("
                                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 (
-                                title, author, genre, year, narrator, description, bitrate, duration, size, file_path,))
+                                    title, author, genre, year, narrator, description, bitrate, duration, size,
+                                    file_path,))
             self.connection.commit()
 
             print("Книга добавлена в базу(database)", file_path)
@@ -182,17 +183,25 @@ class Database:
     def update_book_info(self, book_id, metadata):
         self.connect()
         try:
-            # Создаем строку с перечислением полей и их новых значений
+            # Формирование строки с перечислением полей и их новых значений
             update_parts = ', '.join([f"{key} = ?" for key in metadata.keys()])
+            # Сбор всех значений в список для использования в запросе
             values = list(metadata.values()) + [book_id]
 
+            # Формирование SQL-запроса с использованием динамически сформированных частей
             query = f"UPDATE audiobooks SET {update_parts} WHERE book_id = ?"
             self.cursor.execute(query, values)
-            self.connection.commit()
+            self.connection.commit()  # Подтверждение изменений
 
-            print(f"Информация по книге с ID {book_id} обновлена в базе.")
+            print(f"Информация по книге с ID {book_id} успешно обновлена в базе.")
 
         except Exception as e:
             print(f"Ошибка при обновлении аудиокниги: {e}")
         finally:
-            self.close()
+            self.close()  # Закрытие соединения с базой данных
+
+    def update_listened_status(self, state, file_path):
+        self.connect()
+        self.cursor.execute("UPDATE audiobooks_files SET is_listened = ? WHERE file_path = ?", (state, file_path))
+        self.connection.commit()
+        self.close()

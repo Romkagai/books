@@ -1,8 +1,9 @@
 import os
+import subprocess
 
 from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QTableWidgetItem, QDialog, QLabel
+from PyQt6.QtWidgets import QTableWidgetItem, QDialog, QLabel, QCheckBox, QWidget, QHBoxLayout
 
 from view.audiobook_editor_view import EditBookDialog
 
@@ -17,10 +18,12 @@ class AudiobookInfoController(QObject):
         self.setup_connections()
 
         self.current_row = None
+        self.current_book_id = None
         self.current_is_favorite = None
         self.current_is_completed = None
 
         self.current_book_info_options = None
+        self.current_book_info = None
 
         self.init_info_labels()
 
@@ -55,8 +58,10 @@ class AudiobookInfoController(QObject):
     # Выбрана книга в таблице
     def update_selected_book_id(self, row, book_id):
         self.current_row = row
-        self.current_book_id = book_id
-        self.display_audiobook_info()
+        if self.current_book_id != book_id:  # Check if a new book is selected
+            self.current_book_id = book_id
+            self.current_book_info = self.model.get_book_info_by_id(book_id)  # Cache book info
+            self.display_audiobook_info()
 
     def display_audiobook_info(self, bookExists=True):
         if bookExists:
@@ -82,7 +87,8 @@ class AudiobookInfoController(QObject):
             self.deactivate_buttons()
 
     def update_current_book_info(self):
-        book_info = self.model.get_book_info_by_id(self.current_book_id)
+        book_info = self.current_book_info
+        print("Текущая книга: ", self.current_book_info)
 
         for key, label in self.view.infoLabels.items():
             if key in book_info:
@@ -127,10 +133,32 @@ class AudiobookInfoController(QObject):
 
     def update_file_table(self, book_id):
         files = self.model.get_audiobook_files(book_id)
-        self.view.fileTable.setRowCount(len(files))  # Установка количества строк
+        self.view.fileTable.setRowCount(len(files))
         for index, (file_path, is_listened) in enumerate(files):
             self.view.fileTable.setItem(index, 0, QTableWidgetItem(os.path.basename(file_path)))
-            self.view.fileTable.setItem(index, 1, QTableWidgetItem("Да" if is_listened else "Нет"))
+
+            # Создание контейнера и лейаута для чекбокса
+            widget = QWidget()
+            layout = QHBoxLayout(widget)
+            layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Выравнивание по центру
+            layout.setContentsMargins(0, 0, 0, 0)  # Удаление отступов вокруг лейаута
+
+            # Создание и инициализация чекбокса
+            chkBox = QCheckBox()
+            chkBox.setChecked(is_listened)
+            # Исправленное использование lambda для захвата текущего значения file_path
+            chkBox.stateChanged.connect(lambda state, path=file_path: self.toggle_listened(state, path))
+
+            # Добавление чекбокса в лейаут
+            layout.addWidget(chkBox)
+            widget.setLayout(layout)
+
+            # Установка виджета с чекбоксом в ячейку таблицы
+            self.view.fileTable.setCellWidget(index, 1, widget)
+
+    def toggle_listened(self, state, file_path):
+        is_listened = state == Qt.CheckState.Checked.value
+        self.model.update_listened_status(is_listened,file_path)
 
     def delete_audiobook(self):
         # Удаляем аудиокнигу из базы данных.
@@ -223,13 +251,32 @@ class AudiobookInfoController(QObject):
         self.update_favourite_button()
 
     def edit_book(self):
-        book_info = self.model.get_book_info_by_id(self.current_book_id, self.model.get_all_book_info_options()[:-1])
-
+        book_info = self.current_book_info
+        book_info.pop('Путь')
         dialog = EditBookDialog(self.view, book_info)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.model.update_book_info(self.current_book_id, dialog.book_info)
+            self.current_book_info = self.model.get_book_info_by_id(self.current_book_id)
             self.update_table.emit()
             self.update_current_book_info()
+
+    def open_audiobook_folder(self):
+        book_path = self.current_book_info.get('Путь')  # Предполагается, что 'Путь' содержит путь к файлу
+        if book_path:
+            # Получаем директорию из полного пути файла
+            directory_path = os.path.dirname(book_path)
+            if os.path.isdir(directory_path):
+                # Открываем директорию в системном файловом менеджере
+                if os.name == 'nt':
+                    # Используем команду /select, чтобы корректно открыть папку и выделить файл
+                    subprocess.run(['explorer', '/select,', os.path.normpath(book_path)])
+                else:
+                    # Для MacOS и Linux просто открываем папку
+                    subprocess.run(['open', directory_path])
+            else:
+                print("Указанная директория не существует")
+        else:
+            print("Путь к файлу не указан")
 
     def setup_connections(self):
         self.view.findBookInfoButton.clicked.connect(lambda: None)
@@ -237,3 +284,4 @@ class AudiobookInfoController(QObject):
         self.view.addCompletedButton.clicked.connect(lambda: None)
         self.view.deleteButton.clicked.connect(self.delete_audiobook)
         self.view.editButton.clicked.connect(self.edit_book)
+        self.view.openAudiobookButton.clicked.connect(self.open_audiobook_folder)
