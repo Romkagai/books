@@ -4,17 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="обновлена работа с таблицей файлов">
+    <list default="true" id="ce1c399d-20b1-48ab-9237-a8f9b94dbb73" name="Changes" comment="обновлен ui, добавлены краткие описания функций, вид приведен к pep8">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/audiobook_info_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/audiobook_info_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/catalog_panel_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/catalog_panel_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/metadata_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/metadata_extractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/catalog_panel_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/catalog_panel_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/audiobook_info_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/audiobook_info_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/audiobook_info_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/audiobook_info_view.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/catalog_panel_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/catalog_panel_view.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +227,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715512942070</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="обновлен ui, добавлены краткие описания функций, вид приведен к pep8">
+      <option name="closed" value="true" />
+      <created>1715693692864</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1715693692864</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -248,7 +251,8 @@
     <MESSAGE value="ошибка с получением пути (с горем пополам)" />
     <MESSAGE value="Обработано редактирование, добавлены настройки отображаемой информации" />
     <MESSAGE value="обновлена работа с таблицей файлов" />
-    <option name="LAST_COMMIT_MESSAGE" value="обновлена работа с таблицей файлов" />
+    <MESSAGE value="обновлен ui, добавлены краткие описания функций, вид приведен к pep8" />
+    <option name="LAST_COMMIT_MESSAGE" value="обновлен ui, добавлены краткие описания функций, вид приведен к pep8" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
