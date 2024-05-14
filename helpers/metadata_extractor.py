@@ -4,6 +4,12 @@ import os
 
 
 def extract_metadata(file_path):
+    """
+    Извлекает метаданные из аудиофайла.
+
+    :param file_path: Путь к аудиофайлу.
+    :return: Словарь с метаданными.
+    """
     metadata = {
         "title": "Без названия",
         "author": "Неизвестен",
@@ -30,22 +36,36 @@ def extract_metadata(file_path):
             metadata["duration"] = int(audio.info.length)
             metadata["size"] = os.path.getsize(file_path)
     except Exception as e:
-        print(f"Ошибка при обработке аудиофайла: {e}")
+        print(f"Ошибка при обработке аудиофайла '{file_path}': {e}")
 
     return metadata
 
 
 def extract_cover_from_file(file_path):
-    tags = ID3(file_path)
+    """
+    Извлекает обложку из аудиофайла.
+
+    :param file_path: Путь к аудиофайлу.
+    :return: Данные обложки в виде байтов или None.
+    """
     cover_data = None
-    for tag in tags.getall("APIC"):
-        if tag.mime == "image/jpeg":
-            cover_data = tag.data
-            break
+    try:
+        tags = ID3(file_path)
+        for tag in tags.getall("APIC"):
+            if tag.mime == "image/jpeg":
+                cover_data = tag.data
+                break
+    except Exception as e:
+        print(f"Ошибка при извлечении обложки из файла '{file_path}': {e}")
     return cover_data
 
 
 def get_audio_files(directory_path):
+    """
+    Получает список аудиофайлов в директории.
+
+    :param directory_path: Путь к директории.
+    :return: Список путей к аудиофайлам.
+    """
     return [os.path.join(directory_path, f) for f in os.listdir(directory_path)
-            if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(
-            os.path.join(directory_path, f))]
+            if f.endswith(('.mp3', '.aac', '.wav', '.ogg')) and os.path.isfile(os.path.join(directory_path, f))]

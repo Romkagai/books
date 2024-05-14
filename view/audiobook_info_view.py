@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsScene, QGraphicsView, QLabel, QPushButton, QTableWidget, \
-    QHeaderView
+    QHeaderView, QScrollArea
 
 
 class BookInfoTab(QWidget):
@@ -9,8 +9,15 @@ class BookInfoTab(QWidget):
 
     def setupUI(self):
         layout = QVBoxLayout()
+        self.scrollArea = QScrollArea()
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.scrollAreaWidgetContents.setLayout(layout)
+        mainLayout = QVBoxLayout(self)
+        mainLayout.addWidget(self.scrollArea)
         self.setup_book_info_tab(layout)
-        self.setLayout(layout)
+        self.setLayout(mainLayout)
 
     def setup_book_info_tab(self, layout):
         self.setupImageView(layout)

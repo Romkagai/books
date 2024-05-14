@@ -60,6 +60,7 @@ class AudiobookInfoController(QObject):
         self.current_row = row
         if self.current_book_id != book_id:  # Check if a new book is selected
             self.current_book_id = book_id
+            print(book_id)
             self.current_book_info = self.model.get_book_info_by_id(book_id)  # Cache book info
             self.display_audiobook_info()
 
@@ -199,6 +200,9 @@ class AudiobookInfoController(QObject):
         self.view.addCompletedButton.clicked.disconnect()
         self.view.addCompletedButton.clicked.connect(new_handler)
 
+        # Обновляем таблицу книг
+        self.update_table.emit()
+
     def mark_as_complete(self):
         # Изменение состояния выполненного в базе данных
         self.model.mark_as_completed(self.current_book_id)
@@ -233,6 +237,9 @@ class AudiobookInfoController(QObject):
         # Переключаем обработчик событий
         self.view.addFavoriteButton.clicked.disconnect()
         self.view.addFavoriteButton.clicked.connect(new_handler)
+
+        # Обновляем таблицу книг
+        self.update_table.emit()
 
     def add_to_favorites(self):
         # Изменение состояния избранного в базе данных
