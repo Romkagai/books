@@ -1,9 +1,9 @@
 {
     "sort_options": {
         "Название": true,
-        "Автор": false,
-        "Год": false,
-        "Жанр": false,
+        "Автор": true,
+        "Год": true,
+        "Жанр": true,
         "Чтец": false,
         "Дата добавления": false,
         "Битрейт": false,
@@ -12,8 +12,8 @@
     },
     "display_options": {
         "Название": true,
-        "Автор": false,
-        "Год": false,
+        "Автор": true,
+        "Год": true,
         "Жанр": false,
         "Чтец": false,
         "Дата добавления": false,

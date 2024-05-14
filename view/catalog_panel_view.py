@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QLabel, QLineEdit, QComboBox, QPushButton, QHBoxLayout, \
-    QHeaderView
+    QHeaderView, QSizePolicy
 from PyQt6.QtCore import QTimer
+
 
 class CatalogPanel(QWidget):
     def __init__(self):
@@ -12,10 +13,14 @@ class CatalogPanel(QWidget):
         Настройка пользовательского интерфейса для панели каталога.
         """
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(10)
+
         self.setup_searching_button(layout)
         self.setup_sorting_controls(layout)
         self.setup_search_panel(layout)
         self.setup_audiobook_table(layout)
+
         self.setLayout(layout)
 
     def setup_search_panel(self, layout):
@@ -61,17 +66,18 @@ class CatalogPanel(QWidget):
         self.sort_options.setStyleSheet("""
             QComboBox {
                 border: 2px solid #3e3e3e;
-                border-radius: 5px;
+                border-radius: 7px;
                 padding: 5px;
                 font-size: 14px;
                 background-color: #2e2e2e;
                 color: #f0f0f0;
             }
         """)
+
         self.sort_direction_button.setStyleSheet("""
             QPushButton {
                 border: 2px solid #3e3e3e;
-                border-radius: 5px;
+                border-radius: 10px;
                 padding: 5px;
                 font-size: 14px;
                 background-color: #2e2e2e;
@@ -83,6 +89,8 @@ class CatalogPanel(QWidget):
         """)
 
         sort_layout = QHBoxLayout()
+        sort_layout.setContentsMargins(0, 0, 0, 0)
+        sort_layout.setSpacing(5)
         sort_layout.addWidget(sort_label)
         sort_layout.addWidget(self.sort_options)
         sort_layout.addWidget(self.sort_direction_button)
@@ -127,4 +135,5 @@ class CatalogPanel(QWidget):
         # Отключение редактирования
         self.audiobook_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
+        self.audiobook_table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         layout.addWidget(self.audiobook_table)

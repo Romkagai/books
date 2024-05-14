@@ -14,6 +14,8 @@ from controllers.catalog_panel_controller import CatalogPanelController
 class AudioBookCataloguer(QWidget):
     def __init__(self):
         super().__init__()
+        self.setMinimumSize(800, 600)  # Установим минимальный размер окна
+        self.resize(1024, 768)  # Установим начальный размер окна
         self.setup_ui()
         self.setup_models()
         self.setup_controllers()
@@ -40,7 +42,7 @@ class AudioBookCataloguer(QWidget):
                 background: #4e4e4e;
                 padding: 10px;
                 border: 1px solid #444444;
-                border-radius: 4px;
+                border-radius: 10px;
             }
             QTabBar::tab:selected {
                 background: #2e2e2e;
@@ -66,6 +68,7 @@ class AudioBookCataloguer(QWidget):
         self.main_layout = QHBoxLayout()
         self.setup_catalog_panel()
         self.setup_tabs()
+        self.main_layout.setContentsMargins(15, 15, 15, 15)
         self.setLayout(self.main_layout)
 
     def setup_catalog_panel(self):
@@ -117,7 +120,8 @@ class AudioBookCataloguer(QWidget):
         self.audiobook_info_controller.update_table.connect(self.catalog_panel_controller.update_audiobook_table)
         self.settings_controller.update_sort_settings.connect(self.catalog_panel_controller.update_sort_panel)
         self.settings_controller.update_display_settings.connect(self.catalog_panel_controller.update_display_options)
-        self.settings_controller.update_book_info_settings.connect(self.audiobook_info_controller.update_book_info_options)
+        self.settings_controller.update_book_info_settings.connect(
+            self.audiobook_info_controller.update_book_info_options)
 
     def load_app_settings(self):
         """
