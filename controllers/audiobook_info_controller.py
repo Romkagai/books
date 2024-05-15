@@ -6,7 +6,9 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QTableWidgetItem, QDialog, QLabel, QCheckBox, QWidget, QHBoxLayout, QMessageBox
 
 from view.audiobook_editor_view import EditBookDialog
-from helpers.metadata_extractor import find_book_info
+from helpers.metadata_extractor import find_books, parse_book_details
+from view.audiobook_selector_view import SelectBookDialog
+
 
 class AudiobookInfoController(QObject):
     update_table = pyqtSignal()
@@ -256,13 +258,20 @@ class AudiobookInfoController(QObject):
     def find_audiobook_info(self):
         book_title = self.current_book_info.get('Название')
         if book_title:
-            new_book_info = find_book_info(book_title)
-            print(new_book_info)
-            if new_book_info is not None:
-                self.edit_book(new_book_info)
+            books = find_books(book_title)
+            if books:
+                select_dialog = SelectBookDialog(self.view, books)
+                if select_dialog.exec() == QDialog.DialogCode.Accepted:
+                    selected_book = select_dialog.selected_book
+                    if selected_book:
+                        book_details = parse_book_details(selected_book['URL'])
+                        if book_details:
+                            self.edit_book(book_details)
+                    else:
+                        QMessageBox.warning(self.view, "Ошибка",
+                                            "Не удалось обнаружить информацию для данной аудиокниги")
             else:
-                QMessageBox.warning(self.view, "Ошибка", "Не удалось обнаружить информации для данной аудиокниги")
-
+                QMessageBox.warning(self.view, "Ошибка", "Не удалось обнаружить информацию для данной аудиокниги")
 
     def setup_connections(self):
         self.view.action_buttons["find_info"].clicked.connect(self.find_audiobook_info)
