@@ -101,6 +101,8 @@ class AudiobookInfoController(QObject):
 
         for key, (key_label, value_label) in self.view.info_labels.items():
             if key in book_info:
+                key_label.setVisible(True)
+                value_label.setVisible(True)
                 value_label.setText(f"{book_info[key]}")
 
         if 'Путь' in book_info and os.path.isdir(book_info['Путь']):
