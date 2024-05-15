@@ -3,9 +3,10 @@ import subprocess
 
 from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QTableWidgetItem, QDialog, QLabel, QCheckBox, QWidget, QHBoxLayout, QVBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QTableWidgetItem, QDialog, QLabel, QCheckBox, QWidget, QHBoxLayout, QMessageBox
 
 from view.audiobook_editor_view import EditBookDialog
+from helpers.metadata_extractor import find_book_info
 
 class AudiobookInfoController(QObject):
     update_table = pyqtSignal()
@@ -223,10 +224,13 @@ class AudiobookInfoController(QObject):
         self.current_is_favorite = False
         self.update_favorite_button()
 
-    def edit_book(self):
-        book_info = self.current_book_info
+    def edit_book(self, book_info=None):
+        if book_info is None or not isinstance(book_info, dict):
+            book_info = self.current_book_info
+
         book_info.pop('Путь', None)
         dialog = EditBookDialog(self.view, book_info)
+
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.model.update_book_info(self.current_book_id, dialog.book_info)
             self.current_book_info = self.model.get_book_info_by_id(self.current_book_id)
@@ -247,8 +251,19 @@ class AudiobookInfoController(QObject):
         else:
             print("Путь к файлу не указан")
 
+    def find_audiobook_info(self):
+        book_title = self.current_book_info.get('Название')
+        if book_title:
+            new_book_info = find_book_info(book_title)
+            print(new_book_info)
+            if new_book_info is not None:
+                self.edit_book(new_book_info)
+            else:
+                QMessageBox.warning(self.view, "Ошибка", "Не удалось обнаружить информации для данной аудиокниги")
+
+
     def setup_connections(self):
-        self.view.action_buttons["find_info"].clicked.connect(lambda: None)
+        self.view.action_buttons["find_info"].clicked.connect(self.find_audiobook_info)
         self.view.action_buttons["add_favorite"].clicked.connect(lambda: None)
         self.view.action_buttons["mark_completed"].clicked.connect(lambda: None)
         self.view.action_buttons["delete"].clicked.connect(self.delete_audiobook)
