@@ -1,7 +1,6 @@
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QLabel, QPushButton, QGroupBox, QScrollArea, QHBoxLayout
-
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QPushButton, QGroupBox, QScrollArea
 from config import SORT_OPTIONS, COLUMN_OPTIONS, BOOK_INFO_OPTIONS
+
 
 class SettingsTab(QWidget):
     def __init__(self):
@@ -38,12 +37,25 @@ class SettingsTab(QWidget):
         self.add_book_info_checkboxes(BOOK_INFO_OPTIONS, book_info_layout)
         scroll_layout.addWidget(book_info_group)
 
-        # Кнопка сохранения
-        self.saveSettingsButton = QPushButton("Сохранить настройки")
-        scroll_layout.addWidget(self.saveSettingsButton)
-
         # Добавление скроллируемой области в основной layout
         self.layout.addWidget(scroll_area)
+
+        # Кнопка сохранения
+        self.saveSettingsButton = QPushButton("Сохранить настройки")
+        self.saveSettingsButton.setStyleSheet("""
+                    QPushButton {
+                        border: 2px solid #3e3e3e;
+                        border-radius: 10px;
+                        padding: 5px;
+                        font-size: 14px;
+                        background-color: #2e2e2e;
+                        color: #f0f0f0;
+                    }
+                    QPushButton:hover {
+                        background-color: #3e3e3e;
+                    }
+                """)
+        self.layout.addWidget(self.saveSettingsButton)
 
     def add_sort_checkboxes(self, options, layout):
         for option in options:
