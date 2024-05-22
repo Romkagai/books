@@ -58,6 +58,7 @@ class AudiobookInfoController(QObject):
         """
         all_labels = set(self.view.info_labels.keys())
         visible_labels = set(self.current_book_info_options)
+        print(self.current_book_info_options)
 
         # Сделаем видимыми только нужные лейблы и скроем остальные
         for label in all_labels:
@@ -68,6 +69,9 @@ class AudiobookInfoController(QObject):
             else:
                 key_label.setVisible(False)
                 value_label.setVisible(False)
+
+        if self.current_book_id is not None:
+            self.update_current_book_info()
 
     def update_selected_book_id(self, row, book_id):
         """
@@ -102,10 +106,14 @@ class AudiobookInfoController(QObject):
         book_info = self.current_book_info
 
         for key, (key_label, value_label) in self.view.info_labels.items():
-            if key in book_info:
+            if key in self.current_book_info_options and key in book_info:
                 key_label.setVisible(True)
                 value_label.setVisible(True)
                 value_label.setText(f"{book_info[key]}")
+            else:
+                key_label.setVisible(False)
+                value_label.setVisible(False)
+                value_label.setText("")
 
         if 'Путь' in book_info and os.path.isdir(book_info['Путь']):
             self.view.file_table.setVisible(True)
