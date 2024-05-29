@@ -38,7 +38,7 @@ class SettingsTab(QWidget):
         scroll_layout.addWidget(book_info_group)
 
         # Добавление групп для различных дополнительных опций
-        other_group = QGroupBox("Другие настройки")
+        other_group = QGroupBox("Другие опции")
         other_layout = QVBoxLayout(other_group)
         theme_label = QLabel("Выбор темы:")
         self.theme_combo_box = QComboBox()

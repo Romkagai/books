@@ -58,7 +58,6 @@ class AudiobookInfoController(QObject):
         """
         all_labels = set(self.view.info_labels.keys())
         visible_labels = set(self.current_book_info_options)
-        print(self.current_book_info_options)
 
         # Сделаем видимыми только нужные лейблы и скроем остальные
         for label in all_labels:
@@ -258,10 +257,6 @@ class AudiobookInfoController(QObject):
                     subprocess.run(['explorer', '/select,', os.path.normpath(book_path)])
                 else:
                     subprocess.run(['open', directory_path])
-            else:
-                print("Указанная директория не существует")
-        else:
-            print("Путь к файлу не указан")
 
     def find_audiobook_info(self):
         book_title = self.current_book_info.get('Название')

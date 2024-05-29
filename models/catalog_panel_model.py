@@ -1,5 +1,5 @@
 from database.database import Database
-from helpers.metadata_extractor import extract_metadata, get_audio_files
+from helpers.metadata_extractor import extract_metadata, get_audio_files, format_size, format_bitrate, format_duration
 from config import DATABASE_FIELD_MAP
 import os
 
@@ -13,11 +13,49 @@ class CatalogPanelModel:
         :param file_path: Путь к аудиофайлу или директории.
         :param directory: Директория, если файл_path является директорией.
         """
-        metadata = extract_metadata(file_path)
         if directory:
-            metadata["title"] = os.path.basename(directory)
-            metadata["path"] = directory
-        self.db.add_audiobook_to_db(metadata)
+            total_bitrate = 0
+            total_duration = 0
+            total_size = 0
+            file_count = 0
+
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    if file.endswith('.mp3'):
+                        file_path = os.path.join(root, file)
+                        metadata = extract_metadata(file_path)
+                        total_bitrate += metadata["bitrate"]
+                        total_duration += metadata["duration"]
+                        total_size += metadata["size"]
+                        file_count += 1
+
+            if file_count > 0:
+                avg_bitrate = total_bitrate / file_count  # Средний битрейт
+
+                # Применение форматирования к метаданным
+                formatted_metadata = {
+                    "title": os.path.basename(directory),
+                    "author": metadata["author"],  # Берем автора из последнего файла
+                    "genre": metadata["genre"],  # Берем жанр из последнего файла
+                    "year": metadata["year"],  # Берем год из последнего файла
+                    "narrator": metadata["narrator"],  # Берем рассказчика из последнего файла
+                    "description": metadata["description"],  # Берем описание из последнего файла
+                    "bitrate": format_bitrate(avg_bitrate),
+                    "duration": format_duration(total_duration),
+                    "size": format_size(total_size),
+                    "path": directory
+                }
+
+                self.db.add_audiobook_to_db(formatted_metadata)
+        else:
+            metadata = extract_metadata(file_path)
+
+            # Форматирование отдельных метаданных
+            metadata["bitrate"] = format_bitrate(metadata["bitrate"])
+            metadata["duration"] = format_duration(metadata["duration"])
+            metadata["size"] = format_size(metadata["size"])
+
+            self.db.add_audiobook_to_db(metadata)
 
     def import_file(self, file_path, book_id):
         """

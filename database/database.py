@@ -18,9 +18,9 @@ class Database:
                                    'description TEXT NOT NULL DEFAULT "Без описания"',
                                    'is_completed BOOL DEFAULT FALSE',
                                    'is_favorite BOOL DEFAULT FALSE',
-                                   'bitrate INTEGER NOT NULL DEFAULT 0',
-                                   'duration INTEGER NOT NULL DEFAULT 0',
-                                   'size INTEGER NOT NULL DEFAULT 0',
+                                   'bitrate TEXT NOT NULL DEFAULT 0',
+                                   'duration TEXT NOT NULL DEFAULT 0',
+                                   'size TEXT NOT NULL DEFAULT 0',
                                    'path TEXT NOT NULL UNIQUE'])
 
         self.create_table(table_name="audiobooks_files",
@@ -51,8 +51,6 @@ class Database:
                                     title, author, genre, year, narrator, description, bitrate, duration, size,
                                     file_path,))
             self.connection.commit()
-
-            print("Книга добавлена в базу(database)", file_path)
 
         except sqlite3.IntegrityError as e:
             print("Error", e)
@@ -122,7 +120,6 @@ class Database:
     def close(self):
         if self.connection:
             self.connection.close()
-            print("Connection closed.")
 
     def create_table(self, table_name, columns):
         self.connect()
@@ -131,7 +128,6 @@ class Database:
             create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_str})"
             self.cursor.execute(create_table_query)
             self.connection.commit()
-            print("Table created (existed) successfully:", table_name)
         except sqlite3.Error as e:
             print("Error creating table:", e)
         self.close()
@@ -192,8 +188,6 @@ class Database:
             query = f"UPDATE audiobooks SET {update_parts} WHERE book_id = ?"
             self.cursor.execute(query, values)
             self.connection.commit()  # Подтверждение изменений
-
-            print(f"Информация по книге с ID {book_id} успешно обновлена в базе.")
 
         except Exception as e:
             print(f"Ошибка при обновлении аудиокниги: {e}")
