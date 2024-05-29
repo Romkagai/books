@@ -1,7 +1,22 @@
 from PyQt6.QtCore import pyqtSignal, QObject, Qt
-from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QHeaderView
-from config import DATABASE_FIELD_MAP
+from PyQt6.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QHeaderView, QListView, QAbstractItemView, \
+    QTreeView, QDialog
+
+
+class MultiDirectoryDialog(QFileDialog):
+    def __init__(self, parent=None, caption='', directory=''):
+        super().__init__(parent, caption, directory)
+        self.setFileMode(QFileDialog.FileMode.Directory)
+        self.setOption(QFileDialog.Option.DontUseNativeDialog, True)
+        self.findChild(QListView, 'listView').setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        self.findChild(QTreeView, 'treeView').setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+
+    @staticmethod
+    def getExistingDirectories(parent=None, caption='', directory=''):
+        dialog = MultiDirectoryDialog(parent, caption, directory)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            return dialog.selectedFiles()
+        return []
 
 
 class CatalogPanelController(QObject):
@@ -124,9 +139,9 @@ class CatalogPanelController(QObject):
         """
         choice = self.prompt_audiobook_choice()
         if choice == 0:  # Выбран файл
-            self.add_file()
+            self.add_files()
         elif choice == 1:  # Выбрана директория
-            self.add_directory()
+            self.add_directories()
 
     @staticmethod
     def prompt_audiobook_choice():
@@ -141,33 +156,38 @@ class CatalogPanelController(QObject):
         msg_box.addButton("Отмена", QMessageBox.ButtonRole.RejectRole)
         return msg_box.exec()
 
-    def add_file(self):
+    def add_files(self):
         """
-        Добавляет аудиофайл в базу данных.
+        Добавляет аудиофайлы в базу данных.
         """
-        file_path, _ = QFileDialog.getOpenFileName(self.view, "Выберите аудиофайл", "", "Audio Files (*.mp3 *.aac *.wav)")
-        if file_path:
-            if not self.model.audiobook_exists(file_path):
-                self.model.import_audiobook(file_path)
-                book_id = self.model.get_book_id(file_path)
-                self.model.import_file(file_path, book_id)
-                self.update_audiobook_table()
-            else:
-                QMessageBox.information(self.view, "Внимание!", "Данная аудиокнига уже есть в библиотеке")
-
-    def add_directory(self):
-        """
-        Добавляет директорию с аудиофайлами в базу данных.
-        """
-        directory = QFileDialog.getExistingDirectory(self.view, "Выберите папку с аудиофайлами")
-        if directory:
-            if not self.model.audiobook_exists(directory):
-                files_to_add = self.model.get_audio_files(directory)
-                if files_to_add:
-                    self.model.import_audiobook(files_to_add[0], directory)
-                    book_id = self.model.get_book_id(directory)
-                    for file_path in files_to_add:
-                        self.model.import_file(file_path, book_id)
+        file_paths, _ = QFileDialog.getOpenFileNames(self.view, "Выберите аудиофайлы", "",
+                                                     "Audio Files (*.mp3 *.aac *.wav)")
+        for file_path in file_paths:
+            if file_path:
+                if not self.model.audiobook_exists(file_path):
+                    self.model.import_audiobook(file_path)
+                    book_id = self.model.get_book_id(file_path)
+                    self.model.import_file(file_path, book_id)
                     self.update_audiobook_table()
-            else:
-                QMessageBox.information(self.view, "Внимание!", "Данная аудиокнига уже есть в библиотеке")
+                else:
+                    QMessageBox.information(self.view, "Внимание!", f"Аудиокнига {file_path} уже есть в библиотеке")
+
+    def add_directories(self):
+        """
+        Добавляет директории с аудиофайлами в базу данных.
+        """
+        directories = MultiDirectoryDialog.getExistingDirectories(self.view, "Выберите папки с аудиофайлами")
+        for directory in directories:
+            if directory:
+                if not self.model.audiobook_exists(directory):
+                    files_to_add = self.model.get_audio_files(directory)
+                    if files_to_add:
+                        self.model.import_audiobook(files_to_add[0], directory)
+                        book_id = self.model.get_book_id(directory)
+                        for file_path in files_to_add:
+                            self.model.import_file(file_path, book_id)
+                        self.update_audiobook_table()
+                else:
+                    QMessageBox.information(self.view, "Внимание!",
+                                            f"Аудиокнига из папки {directory} уже есть в библиотеке")
+
