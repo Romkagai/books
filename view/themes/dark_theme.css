@@ -1,0 +1,193 @@
+/* Основное окно */
+QWidget {
+    font-size: 14px;
+    background-color: #2e2e2e;
+    color: #f0f0f0;
+}
+
+QTabWidget::pane {
+    border: 1px solid #444444;
+    border-radius: 4px;
+    background: #3e3e3e;
+}
+
+QTabBar::tab {
+    background: #4e4e4e;
+    padding: 10px;
+    border: 1px solid #444444;
+    border-radius: 10px;
+}
+
+QTabBar::tab:selected {
+    background: #2e2e2e;
+    border-bottom: 2px solid #0078d7;
+}
+
+QHBoxLayout {
+    margin: 10px;
+}
+
+QToolBar {
+    background: #3e3e3e;
+    border: none;
+}
+
+QToolBar::separator {
+    background: #6e6e6e;
+    width: 1px;
+    height: 20px;
+}
+
+QAction {
+    font-size: 14px;
+    color: #f0f0f0;
+}
+
+/* Окно информации о книге */
+QPushButton#infoButton {
+    border: 2px solid #3e3e3e;
+    border-radius: 5px;
+    padding: 2px;
+    font-size: 14px;
+    background-color: #3e3e3e;
+    color: #f0f0f0;
+}
+
+QPushButton#infoButton:disabled {
+    background-color: #5e5e5e;
+    border: 2px solid #5e5e5e;
+}
+
+QPushButton#infoButton:!disabled {
+    background-color: #4e4e4e;
+}
+
+QPushButton#infoButton:pressed:!disabled {
+    background-color: #2e2e2e;
+}
+
+QWidget#imageView {
+    background: transparent;
+    border: none;
+}
+
+/* Каталог аудиокниг */
+QComboBox {
+    border: 2px solid #3e3e3e;
+    border-radius: 7px;
+    padding: 5px;
+    font-size: 14px;
+    background-color: #2e2e2e;
+    color: #f0f0f0;
+}
+
+QPushButton {
+    border: 2px solid #3e3e3e;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    background-color: #2e2e2e;
+    color: #f0f0f0;
+}
+
+QPushButton:hover {
+    background-color: #3e3e3e;
+}
+
+QPushButton#addButton {
+    border: 2px solid #0078d7;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #0078d7;
+    color: #ffffff;
+}
+
+QPushButton#addButton:hover {
+    background-color: #005bb5;
+}
+
+QPushButton#addButton:pressed {
+    background-color: #004494;
+}
+
+QLineEdit {
+    border: 2px solid #3e3e3e;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    background-color: #3e3e3e;
+    color: #f0f0f0;
+}
+
+QLineEdit:focus {
+    border: 2px solid #0078d7;
+    background-color: #2e2e2e;
+}
+
+/* Окно настроек и сохранения */
+QPushButton {
+    border: 2px solid #3e3e3e;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    background-color: #2e2e2e;
+    color: #f0f0f0;
+}
+
+QPushButton:hover {
+    background-color: #3e3e3e;
+}
+
+/* Стиль для скроллбаров */
+QScrollBar:vertical {
+    background: #2e2e2e;
+    width: 15px;
+    margin: 0px 0px 0px 0px;
+    border: 1px solid #444444;
+    border-radius: 7px;
+}
+
+QScrollBar::handle:vertical {
+    background: #4e4e4e;
+    min-height: 20px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+    subcontrol-origin: margin;
+    border: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background: #2e2e2e;
+    height: 15px;
+    margin: 0 15px 0 15px;
+    border: 1px solid #444444;
+    border-radius: 7px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #4e4e4e;
+    min-width: 20px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background: none;
+    width: 0px;
+    subcontrol-origin: margin;
+    border: none;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
