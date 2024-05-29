@@ -8,21 +8,24 @@ import os
 def format_bitrate(bitrate):
     return f"{bitrate / 1000:.2f} kbps"
 
+
 def format_duration(duration):
     hours = duration // 3600
     minutes = (duration % 3600) // 60
     seconds = duration % 60
     return f"{hours}h {minutes}m {seconds}s"
 
+
 def format_size(size):
     if size < 1024:
         return f"{size} B"
-    elif size < 1024**2:
+    elif size < 1024 ** 2:
         return f"{size / 1024:.2f} KB"
-    elif size < 1024**3:
-        return f"{size / 1024**2:.2f} MB"
+    elif size < 1024 ** 3:
+        return f"{size / 1024 ** 2:.2f} MB"
     else:
-        return f"{size / 1024**3:.2f} GB"
+        return f"{size / 1024 ** 3:.2f} GB"
+
 
 def extract_metadata(file_path):
     """
@@ -38,9 +41,9 @@ def extract_metadata(file_path):
         "year": 0,
         "narrator": "Неизвестен",
         "description": "Без описания",
-        "bitrate": "0 kbps",
-        "duration": "0h 0m 0s",
-        "size": "0 B",
+        "bitrate": 0,
+        "duration": 0,
+        "size": 0,
         "path": file_path
     }
 
@@ -62,8 +65,6 @@ def extract_metadata(file_path):
         print(f"Ошибка при обработке аудиофайла '{file_path}': {e}")
 
     return metadata
-
-
 
 
 def extract_cover_from_file(file_path):
