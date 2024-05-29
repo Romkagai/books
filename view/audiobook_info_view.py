@@ -56,7 +56,7 @@ class BookInfoTab(QWidget):
         self.image_scene = QGraphicsScene()
         self.image_view = QGraphicsView(self.image_scene)
         self.image_view.setFixedSize(200, 200)  # Фиксированный размер для обложки
-        self.image_view.setStyleSheet("background: transparent; border: none;")
+        self.image_view.setObjectName("imageView")
         image_layout = QHBoxLayout()
         image_layout.addStretch()
         image_layout.addWidget(self.image_view)
@@ -82,30 +82,8 @@ class BookInfoTab(QWidget):
             "open_folder": QPushButton("Открыть папку с аудиокнигой")
         }
 
-        # Базовый стиль для кнопок
-        button_base_style = """
-            QPushButton {
-                border: 2px solid #3e3e3e;
-                border-radius: 5px;
-                padding: 2px;
-                font-size: 14px;
-                background-color: #3e3e3e;
-                color: #f0f0f0;
-            }
-            QPushButton:disabled {
-                background-color: #5e5e5e;
-                border: 2px solid #5e5e5e;
-            }
-            QPushButton:hover:!disabled {
-                background-color: #4e4e4e;
-            }
-            QPushButton:pressed:!disabled {
-                background-color: #2e2e2e;
-            }
-        """
-
         for button in self.action_buttons.values():
-            button.setStyleSheet(button_base_style)
+            button.setObjectName("infoButton")
             layout.addWidget(button)
             button.setEnabled(False)
 

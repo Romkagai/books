@@ -30,22 +30,6 @@ class CatalogPanel(QWidget):
         self.search_panel = QLineEdit()
         self.search_panel.setPlaceholderText("Введите текст для поиска...")
 
-        # Установка стиля для строки поиска
-        self.search_panel.setStyleSheet("""
-            QLineEdit {
-                border: 2px solid #3e3e3e;
-                border-radius: 10px;
-                padding: 5px;
-                font-size: 14px;
-                background-color: #3e3e3e;
-                color: #f0f0f0;
-            }
-            QLineEdit:focus {
-                border: 2px solid #0078d7;
-                background-color: #2e2e2e;
-            }
-        """)
-
         # Динамический поиск
         self.search_timer = QTimer()
         self.search_timer.setInterval(300)
@@ -61,33 +45,6 @@ class CatalogPanel(QWidget):
         self.sort_options = QComboBox()
         self.sort_direction_button = QPushButton("⬆️")
 
-        # Установка стилей для панели сортировки
-        sort_label.setStyleSheet("color: #f0f0f0; font-size: 14px;")
-        self.sort_options.setStyleSheet("""
-            QComboBox {
-                border: 2px solid #3e3e3e;
-                border-radius: 7px;
-                padding: 5px;
-                font-size: 14px;
-                background-color: #2e2e2e;
-                color: #f0f0f0;
-            }
-        """)
-
-        self.sort_direction_button.setStyleSheet("""
-            QPushButton {
-                border: 2px solid #3e3e3e;
-                border-radius: 10px;
-                padding: 5px;
-                font-size: 14px;
-                background-color: #2e2e2e;
-                color: #f0f0f0;
-            }
-            QPushButton:hover {
-                background-color: #3e3e3e;
-            }
-        """)
-
         sort_layout = QHBoxLayout()
         sort_layout.setContentsMargins(0, 0, 0, 0)
         sort_layout.setSpacing(5)
@@ -100,25 +57,10 @@ class CatalogPanel(QWidget):
         """
         Настройка кнопки добавления аудиокниги.
         """
-        self.add_button = QPushButton("Добавить аудиокнигу")
 
+        self.add_button = QPushButton("Добавить аудиокнигу")
         # Установка стиля для кнопки
-        self.add_button.setStyleSheet("""
-            QPushButton {
-                border: 2px solid #0078d7;
-                border-radius: 10px;
-                padding: 10px;
-                font-size: 14px;
-                background-color: #0078d7;
-                color: #ffffff;
-            }
-            QPushButton:hover {
-                background-color: #005bb5;
-            }
-            QPushButton:pressed {
-                background-color: #004494;
-            }
-        """)
+        self.add_button.setObjectName("addButton")
 
         layout.addWidget(self.add_button)
 

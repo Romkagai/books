@@ -1,6 +1,5 @@
 import json
 
-
 class SettingsModel:
     def __init__(self, filename='settings.json'):
         self.filename = filename
@@ -14,8 +13,13 @@ class SettingsModel:
             print("Файл настроек не найден. Возвращаем значения по умолчанию.")
             return {}
 
-    def save_settings(self, sort_options, display_options, book_info_options):
-        settings = {'sort_options': sort_options, 'display_options': display_options, 'book_info_options': book_info_options}
+    def save_settings(self, sort_options, display_options, book_info_options, theme):
+        settings = {
+            'sort_options': sort_options,
+            'display_options': display_options,
+            'book_info_options': book_info_options,
+            'theme': theme
+        }
         with open(self.filename, 'w', encoding='utf-8') as file:
             json.dump(settings, file, ensure_ascii=False, indent=4)
 
@@ -31,7 +35,6 @@ class SettingsModel:
         settings = self.load_settings()
         return [option for option, enabled in settings['book_info_options'].items() if enabled]
 
-    # Получение настроек из JSON
     def get_sorting_options(self):
         settings = self.load_settings()
         return settings['sort_options']
@@ -43,3 +46,7 @@ class SettingsModel:
     def get_book_info_options(self):
         settings = self.load_settings()
         return settings['book_info_options']
+
+    def get_theme(self):
+        settings = self.load_settings()
+        return settings.get('theme')

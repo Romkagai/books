@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QPushButton, QGroupBox, QScrollArea
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QPushButton, QGroupBox, QScrollArea, QLabel, QComboBox
 from config import SORT_OPTIONS, COLUMN_OPTIONS, BOOK_INFO_OPTIONS
 
 
@@ -37,24 +37,23 @@ class SettingsTab(QWidget):
         self.add_book_info_checkboxes(BOOK_INFO_OPTIONS, book_info_layout)
         scroll_layout.addWidget(book_info_group)
 
+        # Добавление групп для различных дополнительных опций
+        other_group = QGroupBox("Другие настройки")
+        other_layout = QVBoxLayout(other_group)
+        theme_label = QLabel("Выбор темы:")
+        self.theme_combo_box = QComboBox()
+        self.theme_combo_box.addItem("Темная тема")
+        self.theme_combo_box.addItem("Светлая тема")
+        other_layout.addWidget(theme_label)
+        other_layout.addWidget(self.theme_combo_box)
+        other_layout.addStretch()
+        scroll_layout.addWidget(other_group)
+
         # Добавление скроллируемой области в основной layout
         self.layout.addWidget(scroll_area)
 
         # Кнопка сохранения
         self.saveSettingsButton = QPushButton("Сохранить настройки")
-        self.saveSettingsButton.setStyleSheet("""
-                    QPushButton {
-                        border: 2px solid #3e3e3e;
-                        border-radius: 10px;
-                        padding: 5px;
-                        font-size: 14px;
-                        background-color: #2e2e2e;
-                        color: #f0f0f0;
-                    }
-                    QPushButton:hover {
-                        background-color: #3e3e3e;
-                    }
-                """)
         self.layout.addWidget(self.saveSettingsButton)
 
     def add_sort_checkboxes(self, options, layout):

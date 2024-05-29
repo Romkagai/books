@@ -1,3 +1,5 @@
+import os
+
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QTabWidget, QSizePolicy
 from view.audiobook_info_view import BookInfoTab
 from view.settings_tab_view import SettingsTab
@@ -27,44 +29,6 @@ class AudioBookCataloguer(QWidget):
         Настройка пользовательского интерфейса.
         """
         self.setWindowTitle("Каталогизатор аудиокниг")
-        self.setStyleSheet("""
-            QWidget {
-                font-size: 14px;
-                background-color: #2e2e2e;
-                color: #f0f0f0;
-            }
-            QTabWidget::pane {
-                border: 1px solid #444444;
-                border-radius: 4px;
-                background: #3e3e3e;
-            }
-            QTabBar::tab {
-                background: #4e4e4e;
-                padding: 10px;
-                border: 1px solid #444444;
-                border-radius: 10px;
-            }
-            QTabBar::tab:selected {
-                background: #2e2e2e;
-                border-bottom: 2px solid #0078d7;
-            }
-            QHBoxLayout {
-                margin: 10px;
-            }
-            QToolBar {
-                background: #3e3e3e;
-                border: none;
-            }
-            QToolBar::separator {
-                background: #6e6e6e;
-                width: 1px;
-                height: 20px;
-            }
-            QAction {
-                font-size: 14px;
-                color: #f0f0f0;
-            }
-        """)
         self.main_layout = QHBoxLayout()
         self.setup_catalog_panel()
         self.setup_tabs()
@@ -122,6 +86,7 @@ class AudioBookCataloguer(QWidget):
         self.settings_controller.update_display_settings.connect(self.catalog_panel_controller.update_display_options)
         self.settings_controller.update_book_info_settings.connect(
             self.audiobook_info_controller.update_book_info_options)
+        self.settings_controller.update_theme.connect(self.apply_stylesheet)
 
     def load_app_settings(self):
         """
@@ -129,3 +94,11 @@ class AudioBookCataloguer(QWidget):
         """
         self.settings_controller.setup_ui_state()
         self.catalog_panel_controller.update_audiobook_table()
+
+    def apply_stylesheet(self, stylesheet_name):
+        """
+        Применение стиля из указанного CSS файла.
+        """
+        stylesheet_path = os.path.join(os.path.dirname(__file__), 'themes', stylesheet_name)
+        with open(stylesheet_path, "r", encoding="utf-8") as file:
+            self.setStyleSheet(file.read())

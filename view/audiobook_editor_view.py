@@ -19,8 +19,6 @@ class EditBookDialog(QDialog):
         self.create_input_fields(main_layout)
         self.create_action_buttons(main_layout)
 
-        self.apply_styles()
-
     def create_input_fields(self, layout):
         for label, value in self.book_info.items():
             self.add_input_field(layout, label, value)
@@ -54,37 +52,3 @@ class EditBookDialog(QDialog):
             self.accept()
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить изменения: {e}")
-
-    def apply_styles(self):
-        self.setStyleSheet("""
-            QDialog {
-                font-size: 14px;
-                background-color: #2e2e2e;
-                color: #f0f0f0;
-            }
-            QLabel {
-                font-size: 14px;
-                color: #f0f0f0;
-            }
-            QLineEdit {
-                background-color: #4e4e4e;
-                color: #f0f0f0;
-                border: 1px solid #444444;
-                border-radius: 4px;
-                padding: 5px;
-            }
-            QPushButton {
-                background-color: #3e3e3e;
-                color: #f0f0f0;
-                border: 1px solid #444444;
-                border-radius: 4px;
-                padding: 5px 10px;
-            }
-            QPushButton:hover {
-                background-color: #2e2e2e;
-                border-color: #0078d7;
-            }
-            QHBoxLayout {
-                margin: 10px;
-            }
-        """)

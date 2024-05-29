@@ -31,8 +31,6 @@ class SelectBookDialog(QDialog):
 
         layout.addLayout(button_layout)
 
-        self.apply_styles()
-
     def select(self):
         selected_index = self.list_widget.currentRow()
         if selected_index >= 0:
@@ -40,37 +38,3 @@ class SelectBookDialog(QDialog):
             self.accept()
         else:
             QMessageBox.warning(self, "Ошибка", "Пожалуйста, выберите книгу из списка")
-
-    def apply_styles(self):
-        self.setStyleSheet("""
-            QDialog {
-                font-size: 14px;
-                background-color: #2e2e2e;
-                color: #f0f0f0;
-            }
-            QLabel {
-                font-size: 14px;
-                color: #f0f0f0;
-            }
-            QListWidget {
-                background-color: #4e4e4e;
-                color: #f0f0f0;
-                border: 1px solid #444444;
-                border-radius: 4px;
-                padding: 5px;
-            }
-            QPushButton {
-                background-color: #3e3e3e;
-                color: #f0f0f0;
-                border: 1px solid #444444;
-                border-radius: 4px;
-                padding: 5px 10px;
-            }
-            QPushButton:hover {
-                background-color: #2e2e2e;
-                border-color: #0078d7;
-            }
-            QHBoxLayout {
-                margin: 10px;
-            }
-        """)
